@@ -2,11 +2,17 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
-    <link rel="stylesheet" href="index.css">
+
+    <title>Representación gráfica de matrícula</title>
   </head>
+
   <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
+    <input type="file" id="fileUpload" accept=".xls"/>
+    <button type="button" id="uploadButton">Añadir</button>
   </body>
+
+  <script>
+    const fileBtn = document.getElementById("fileUpload");
+    const uploadBtn = document.getElementById("uploadButton");
+  </script>
 </html>
