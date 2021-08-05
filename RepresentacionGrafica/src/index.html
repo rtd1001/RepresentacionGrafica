@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
 
     <title>Representación gráfica de matrícula</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   </head>
 
   <body>
@@ -12,7 +14,33 @@
   </body>
 
   <script>
-    const fileBtn = document.getElementById("fileUpload");
-    const uploadBtn = document.getElementById("uploadButton");
+    var fileBtn = document.getElementById("fileUpload");
+    var uploadBtn = document.getElementById("uploadButton");
+
+    fileBtn.addEventListener("change", function(event) {
+      
+      var fileList = this.files;
+
+      for(var i = 0; i < fileList.length; i++){
+        var currentFile = fileList[i];
+        
+        validateFileExtension(currentFile);
+      }
+
+    });
+
+    function validateFileExtension(currentFile){
+      var fileName = currentFile.name;
+      console.log(fileName)
+
+      var ext = fileName.split('.').pop();
+      ext = ext.toLowerCase();
+
+      if(ext != 'xls'){
+        alert('El archivo ' + fileName +  ' no tiene la extensión adecuada. Vuelva a introducir otro archivo.');
+        fileBtn.value = ''; 
+      }
+
+    }
   </script>
 </html>
