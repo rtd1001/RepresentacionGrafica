@@ -191,8 +191,41 @@
             //console.log(degrees.name)
             
           }
-          //console.log(degree)
-          return degrees;
+          var degreesOK;
+          degreesOK = removeDuplicates(degrees);
+          //console.log(degreesOK)
+          return degreesOK;
+      }
+
+      /*Función para eliminar filas duplicadas
+      (si es la misma asignatura y mismo grupo está duplicada,
+      pues se trata de una asignatura con profesores distintos)*/
+      function removeDuplicates(degrees){
+
+        var dataAux; 
+        keys = Object.keys(degrees);
+
+        //recorre el objeto con la información de los grados
+        for(var i = 0; i < keys.length; i++){
+          
+          key = keys[i];
+          dataAux = degrees[key].data;
+          for(var j = 0; j < dataAux.length-1;j++){
+
+            //Si tienen mismo codigo y grupo, las marco(está repetida)
+            if(dataAux[j].asig_codigo === dataAux[j+1].asig_codigo
+              && dataAux[j].asig_grupo === dataAux[j+1].asig_grupo){
+                dataAux[j] = "";
+            }
+
+          }
+
+          //Filtro aquelllas filas que he marcado y las elimino de mi objeto
+          dataAux = dataAux.filter(row => (row + "").trim());
+          degrees[key].data = dataAux;
+        }
+
+        return degrees;
       }
   </script>
 </html>
