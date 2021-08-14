@@ -6,11 +6,35 @@
     <title>Representación gráfica de matrícula</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
   </head>
 
   <body>
     <input type="file" id="fileUpload" accept=".xls" multiple/>
     <button type="button" id="uploadButton">Añadir</button>
+
+    <select id="one-chart-combo">
+      <option hidden selected>Seleccione una gráfica</option>
+      <option>Matriculados en grupos teóricos</option>
+      <option>Grafico 2</option>
+    </select>
+
+    <select id="degree-combo">
+      <option hidden selected>Seleccione un grado</option>
+    </select>
+
+    <select id="year-combo">
+      <option hidden selected>Seleccione un curso</option>
+    </select>
+
+    <select id="semester-combo">
+      <option hidden selected>Seleccione un semestre</option>
+    </select>
+
+    <div id="chart-container">
+      <canvas id="chart-1" width="800" height="450"></canvas>
+    </div>
   </body>
 
   <script>
@@ -19,6 +43,11 @@
     var fileList;
     var worksheet;
     var xlsData = [];
+
+    $("#one-chart-combo").hide();
+    $("#degree-combo").hide();
+    $("#year-combo").hide();
+    $("#semester-combo").hide();
 
     //Función al seleccionar los archivos, los valida.
     fileBtn.addEventListener("change", function(event) {
@@ -50,7 +79,7 @@
 
     //Función para leer los archivos subidos
     uploadBtn.addEventListener("click", function() {
-        console.log(fileList)
+      console.log(fileList)
       var fileListRead = [];
 
       if(fileList != null){
@@ -67,8 +96,11 @@
          
         }
       }
-        
-      console.log(xlsData)
+      
+      if(fileList.length == 1){
+        $("#one-chart-combo").show();
+      }
+      //console.log(xlsData)
     });
 
     //Función para leer y parsear cada uno de los archivos
@@ -103,129 +135,301 @@
     //Función para parsear el archivo
     function readWorksheet(worksheet){
           
-          var degrees = {};
+      var degrees = {};
 
-          //Empiezo en la línea 2 para saltar el encabezado de la hoja de cálculo.
-          var C = 0;
-          var R = 2;
+      //Empiezo en la línea 2 para saltar el encabezado de la hoja de cálculo.
+      var C = 0;
+      var R = 2;
+      
+      //Mientras no sea final del archivo, voy obteniendo los datos relativos a cada grado.
+      var eof = false;
+      while(!eof){
+        
+        //Si se corresponde con el nombre del grado, creo la estructura de dicho grado.
+        var degreeName = worksheet[XLSX.utils.encode_cell({c:C, r:R})];
+        if( degreeName.t != 'n' ){
+
+          degreeName = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+
+          var degree = {
+            name: degreeName, 
+            data:[]
+          };
+
+          degrees[degree.name]=degree;
           
-          //Mientras no sea final del archivo, voy obteniendo los datos relativos a cada grado.
-          var eof = false;
-          while(!eof){
-            
-            //Si se corresponde con el nombre del grado, creo la estructura de dicho grado.
-            var degreeName = worksheet[XLSX.utils.encode_cell({c:C, r:R})];
-            if( degreeName.t != 'n' ){
+          //Me salto la cabecera que corresponde al grado.
+          R += 4;
+        }
+        
+        //Mientras no sea final del archivo o final de los datos del grado en el que me encuentro, leo los datos.
+        var eodegree = false;
+        while( !eodegree && !eof){
+          var degreeRow = {}
 
-              degreeName = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          //Compruebo que la celda no esté vacía y almaceno el dato en la estructura creada para los datos de los grados.
+          if(worksheet[XLSX.utils.encode_cell({c:C, r:R})])   degreeRow.asig_codigo = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_descripcion = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_curso = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_grupo = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_tipAcademica = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_activ = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_tp = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_vp = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_turno = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
 
-              var degree = {
-                name: degreeName, 
-                data:[]
-              };
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_maxPropios_rep = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_maxPropios_noRep = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_matriculados_rep = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_matriculados_noRep = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_propios_max = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_propios_exce = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_propios_asig = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_propios_disp = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_externos_max = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_externos_asig = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_externos_disp = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_progInter = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_total = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.critAs_codigo = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.critAs_descripcion = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.critAs_asigAlfb_desde = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.critAs_asigAlfb_hasta = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
 
-              degrees[degree.name]=degree;
-              
-              //Me salto la cabecera que corresponde al grado.
-              R += 4;
-            }
-            
-            //Mientras no sea final del archivo o final de los datos del grado en el que me encuentro, leo los datos.
-            var eodegree = false;
-            while( !eodegree && !eof){
-              var degreeRow = {}
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_pf = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_niu = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_nombreyapellidos = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_cds = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_actas = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_docencia = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_responsable = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          
+          degree.data.push(degreeRow);
 
-              //Compruebo que la celda no esté vacía y almaceno el dato en la estructura creada para los datos de los grados.
-              if(worksheet[XLSX.utils.encode_cell({c:C, r:R})])   degreeRow.asig_codigo = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_descripcion = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_curso = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_grupo = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_tipAcademica = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_activ = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_tp = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_vp = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_turno = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
+          //Reseteo las filas y columnas, aumento la fila y la columna vuelve a 0 para empezar de nuevo.
+          R += 1;
+          C = 0;
 
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_maxPropios_rep = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_maxPropios_noRep = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_matriculados_rep = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_matriculados_noRep = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_propios_max = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_propios_exce = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_propios_asig = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_propios_disp = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_externos_max = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_externos_asig = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_externos_disp = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_progInter = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_total = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.critAs_codigo = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.critAs_descripcion = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.critAs_asigAlfb_desde = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.critAs_asigAlfb_hasta = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_pf = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_niu = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_nombreyapellidos = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_cds = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_actas = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_docencia = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_responsable = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-              
-              degree.data.push(degreeRow);
-
-              //Reseteo las filas y columnas, aumento la fila y la columna vuelve a 0 para empezar de nuevo.
-              R += 1;
-              C = 0;
-
-              //Verifico las condiciones de los 'while'
-              var nextDegreeRow = worksheet[XLSX.utils.encode_cell({c:C, r:R})];
-              if( !nextDegreeRow ){
-                eof=true;
-              }else if( nextDegreeRow.t === 's' ){
-                eodegree=true;
-              }
-              
-            }
-            //console.log(degrees.name)
-            
+          //Verifico las condiciones de los 'while'
+          var nextDegreeRow = worksheet[XLSX.utils.encode_cell({c:C, r:R})];
+          if( !nextDegreeRow ){
+            eof=true;
+          }else if( nextDegreeRow.t === 's' ){
+            eodegree=true;
           }
-          var degreesOK;
-          degreesOK = removeDuplicates(degrees);
-          //console.log(degreesOK)
-          return degreesOK;
+          
+        }
+        //console.log(degrees.name)
+        
       }
 
-      /*Función para eliminar filas duplicadas
-      (si es la misma asignatura y mismo grupo está duplicada,
-      pues se trata de una asignatura con profesores distintos)*/
-      function removeDuplicates(degrees){
+      var degreesOK;
+      degreesOK = removeDuplicates(degrees);
+      //console.log(degreesOK)
+      return degreesOK;
+    }
 
-        var dataAux; 
-        keys = Object.keys(degrees);
+    /*Función para eliminar filas duplicadas
+    (si es la misma asignatura y mismo grupo está duplicada,
+    pues se trata de una asignatura con profesores distintos)*/
+    function removeDuplicates(degrees){
 
-        //recorre el objeto con la información de los grados
-        for(var i = 0; i < keys.length; i++){
-          
-          key = keys[i];
-          dataAux = degrees[key].data;
-          for(var j = 0; j < dataAux.length-1;j++){
+      var dataAux; 
+      keys = Object.keys(degrees);
 
-            //Si tienen mismo codigo y grupo, las marco(está repetida)
-            if(dataAux[j].asig_codigo === dataAux[j+1].asig_codigo
-              && dataAux[j].asig_grupo === dataAux[j+1].asig_grupo){
-                dataAux[j] = "";
-            }
+      //recorre el objeto con la información de los grados
+      for(var i = 0; i < keys.length; i++){
+        
+        key = keys[i];
+        dataAux = degrees[key].data;
+        for(var j = 0; j < dataAux.length-1;j++){
 
+          //Si tienen mismo codigo y grupo, las marco(está repetida)
+          if(dataAux[j].asig_codigo === dataAux[j+1].asig_codigo
+            && dataAux[j].asig_grupo === dataAux[j+1].asig_grupo){
+              dataAux[j] = "";
           }
 
-          //Filtro aquelllas filas que he marcado y las elimino de mi objeto
-          dataAux = dataAux.filter(row => (row + "").trim());
-          degrees[key].data = dataAux;
         }
 
-        return degrees;
+        //Filtro aquelllas filas que he marcado y las elimino de mi objeto
+        dataAux = dataAux.filter(row => (row + "").trim());
+        degrees[key].data = dataAux;
       }
+
+      return degrees;
+    }
+
+    document.getElementById("one-chart-combo").onchange = function() {
+        
+      selectedChart = this.options[this.selectedIndex].text;
+        
+      var combo = document.getElementById("degree-combo");
+
+      var data = xlsData[0];
+      keys = Object.keys(data);
+      //console.log(keys)
+      for(var i = 0; i < keys.length; i++){
+
+          var opt = document.createElement("option");
+
+          opt.value = i;
+
+          key = keys[i];
+          opt.text = data[key].name;
+          
+          combo.add(opt, combo.options[i])
+
+      }
+
+      $("#degree-combo").show();
+    };
+
+    document.getElementById("degree-combo").onchange = function() {
+        
+      selectedDegree = this.options[this.selectedIndex].text;
+
+      var dataAux = xlsData[0];
+      var data = dataAux[selectedDegree].data;
+      var yearDuplicates = []
+      Object.values(data).forEach(val => {
+        yearDuplicates.push(val.asig_curso);
+      });
+
+      var year = Array.from(new Set(yearDuplicates))
+
+        var yearCombo = document.getElementById("year-combo");
+
+        for(var j = 0; j < year.length; j++){
+          var opt = document.createElement("option");
+
+          opt.value = j;
+          opt.text = year[j];
+          yearCombo.add(opt, yearCombo.options[j])
+        }
+
+      $("#year-combo").show();
+
+    };
+
+    document.getElementById("year-combo").onchange = function() {
+        
+      selectedYear = this.options[this.selectedIndex].text;
+
+      var data = xlsData[0];
+      var selectedInfo = data[selectedDegree].data.filter(row => (row.asig_curso == selectedYear));
+      var selectedDegreeName = data[selectedDegree].name;
+
+      var semesterDuplicates = [];
+      Object.values(selectedInfo).forEach(val => {
+        semesterDuplicates.push(val.asig_vp);
+      });
+      var semester = Array.from(new Set(semesterDuplicates));
+
+      var semesterCombo = document.getElementById("semester-combo");
+
+      for(var i = 0; i < semester.length; i++){
+        var opt = document.createElement("option");
+
+        opt.value = i;
+        opt.text = semester[i];
+        semesterCombo.add(opt, semesterCombo.options[i])
+      }
+
+      $("#semester-combo").show();
+
+    };
+
+    document.getElementById("semester-combo").onchange = function() {
+      selectedSemester = this.options[this.selectedIndex].text;
+
+      drawChart();
+    };
+
+    function drawChart(){
+        
+      chart1();
+    };
+
+    function chart1(){
+        var data = xlsData[0];
+        var info = data[selectedDegree].data.filter(row => (row.asig_curso == selectedYear && row.asig_vp == selectedSemester && row.asig_tipAcademica == 'Teoría' && row.asig_activ == 'S' ));
+
+        var groupsDuplicates = [];
+        var descriptionDuplicates = [];
+        Object.values(info).forEach(val => {
+          groupsDuplicates.push(val.asig_grupo);
+          
+          descriptionDuplicates.push(val.asig_descripcion);
+        });
+
+        var groups = Array.from(new Set(groupsDuplicates));
+        var description = Array.from(new Set(descriptionDuplicates));
+
+        //max 10 groups
+        var colors = ['#2685CB', '#4AD95A', '#FEC81B', '#FD8D14', '#CE00E6', '#4B4AD3', '#FC3026', '#B8CCE3', '#6ADC88', '#FEE45F' ];
+
+        var dataset = [];
+
+        for(var i = 0; i < groups.length; i++){
+
+          var info_group = info.filter(row => row.asig_grupo == groups[i])
+
+          var total = []
+          Object.values(info_group).forEach(val => {
+            total.push(val.alum_total);
+          });
+
+          dataset[i] = {
+            label: "Grupo " + groups[i],
+            data: total,
+            backgroundColor: colors[i],
+            hoverBackgroundColor: colors[i],
+            borderStyle: 'solid',
+          }
+
+        }
+
+        var ctx = document.getElementById('chart-1');
+
+
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: description,
+              datasets: dataset
+            },
+            options: {
+              responsive: true,
+              legend: { 
+                display: true,
+                position: "bottom"
+              },
+              title: {
+                display: true,
+                text: [data[selectedDegree].name, 'Número de matriculados en un curso']
+              },
+              scales: {
+                yAxes: [{
+                  display: true,
+                  ticks: {
+                      beginAtZero: true,
+                      stepSize: 25,
+                      autoSkip: false
+                  }
+                }],
+                xAxes: [{
+                  gridLines: {display: false},
+                  ticks: {
+                      maxRotation:0,
+                      padding:20
+                  }
+                }]
+              }
+            }
+        });
+      };
+
   </script>
 </html>
