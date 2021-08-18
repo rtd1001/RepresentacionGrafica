@@ -4,37 +4,77 @@
     <meta charset="UTF-8">
 
     <title>Representación gráfica de matrícula</title>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+
+  
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   </head>
 
   <body>
-    <input type="file" id="fileUpload" accept=".xls" multiple/>
-    <button type="button" id="uploadButton">Añadir</button>
+    <input  class="btn " type="file" id="fileUpload" accept=".xls" multiple/>
+    <button class="btn btn-outline-primary" type="button" id="uploadButton">Añadir</button>
 
-    <select id="one-chart-combo">
+    <select  class="form-select" id="one-chart-combo">
       <option hidden selected>Seleccione una gráfica</option>
       <option>Matriculados en grupos teóricos</option>
       <option>Grafico 2</option>
     </select>
 
-    <select id="degree-combo">
-      <option hidden selected>Seleccione un grado</option>
-    </select>
+    <div id="add-select" style="display: flex">
+      <button type="button"  class="button">
+        <span class="button__icon">
+          <ion-icon name="add-outline"></ion-icon>
+        </span>
+        <span class="button__text">Añadir serie</span>
+      </button>
+    </div>
 
-    <select id="year-combo">
-      <option hidden selected>Seleccione un curso</option>
-    </select>
+    <div class="accordion" id="accordionExample">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            Series
+          </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            
+              <div class="row">
+                <div class="col-8">
+                  <select class="form-select" id="degree-combo">
+                    <option hidden selected>Seleccione un grado</option>
+                  </select>
+                </div>
+                
+                <div class="col-2">
+                  <select  class="form-select" id="year-combo">
+                    <option hidden selected>Seleccione un curso</option>
+                  </select>
+                </div>
+            
+                <div class="col-2">
+                  <select  class="form-select" id="semester-combo">
+                    <option hidden selected>Seleccione un semestre</option>
+                  </select>
+                </div>
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <select id="semester-combo">
-      <option hidden selected>Seleccione un semestre</option>
-    </select>
-
+    
     <div id="chart-container">
       <canvas id="chart-1" width="800" height="450"></canvas>
     </div>
+    
   </body>
 
   <script>
@@ -45,9 +85,9 @@
     var xlsData = [];
 
     $("#one-chart-combo").hide();
-    $("#degree-combo").hide();
-    $("#year-combo").hide();
-    $("#semester-combo").hide();
+    //$("#degree-combo").hide();
+    //$("#year-combo").hide();
+    //$("#semester-combo").hide();
 
     //Función al seleccionar los archivos, los valida.
     fileBtn.addEventListener("change", function(event) {
@@ -261,7 +301,7 @@
 
       return degrees;
     }
-
+    
     document.getElementById("one-chart-combo").onchange = function() {
         
       selectedChart = this.options[this.selectedIndex].text;
@@ -288,7 +328,7 @@
 
       }
 
-      $("#degree-combo").show();
+      //$("#degree-combo").show();
     };
 
     document.getElementById("degree-combo").onchange = function() {
@@ -317,7 +357,7 @@
           yearCombo.add(opt, yearCombo.options[j])
         }
 
-      $("#year-combo").show();
+      //$("#year-combo").show();
 
     };
 
@@ -353,7 +393,7 @@
         semesterCombo.add(opt, semesterCombo.options[i])
       }
 
-      $("#semester-combo").show();
+      //$("#semester-combo").show();
 
     };
 
