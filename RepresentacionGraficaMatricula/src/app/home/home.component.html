@@ -1,1 +1,22 @@
-<p>home works!</p>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+<script lang="javascript" src="dist/xlsx.full.min.js"></script>
+
+<div class="container">
+
+  <input type="file" class="file-input" id="fileInput"  #fileUpload multiple>
+
+  <div class="file-upload">
+
+    {{fileList || "No ha seleccionado ningún fichero."}}
+ 
+     <button type="button" color="primary" class="btn btn-outline-primary"
+      >
+        
+     </button>
+ </div>
+
+  <a routerLink="/detail" class="btn btn-outline-primary">Subir archivos</a>
+
+  <button >Añadir</button>
+
+</div>
