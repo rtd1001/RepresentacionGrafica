@@ -3,20 +3,20 @@
 
 <div class="container">
 
-  <input type="file" class="file-input" id="fileInput"  #fileUpload multiple>
+  <input type="file" class="file-input" id="fileInput" (change)="onFileSelected($event)" #fileUpload multiple>
 
   <div class="file-upload">
 
     {{fileList || "No ha seleccionado ningún fichero."}}
  
-     <button type="button" color="primary" class="btn btn-outline-primary"
-      >
+     <button type="button" color="primary" class="upload-btn"
+       (click)="fileUpload.click()">
         
      </button>
  </div>
 
-  <a routerLink="/detail" class="btn btn-outline-primary">Subir archivos</a>
+  <a routerLink="/detail" (click)="sendFile($event)">Subir archivos</a>
 
-  <button >Añadir</button>
+  <button (click)="sendFile($event)">Añadir</button>
 
 </div>
