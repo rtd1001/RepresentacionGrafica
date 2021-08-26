@@ -9,10 +9,11 @@
 
     {{fileList || "No ha seleccionado ningún fichero."}}
  
-     <button type="button" color="primary" class="upload-btn"
-       (click)="fileUpload.click()">
-        
+     <button mat-fab color="primary" class="upload-btn"
+       (click)="fileUpload.click()">Añadir archivos
+       <mat-icon>add</mat-icon>
      </button>
+     
  </div>
 
   <a routerLink="/detail" (click)="sendFile($event)">Subir archivos</a>
