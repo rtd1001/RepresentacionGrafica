@@ -16,8 +16,8 @@
      
  </div>
 
-  <a routerLink="/detail" (click)="sendFile($event)">Subir archivos</a>
-
+  <button routerLink="/details" (click)="sendFile($event)" routerLinkActive="active">Subir archivos</button>
+  <router-outlet></router-outlet>
   <button (click)="sendFile($event)">Añadir</button>
 
 </div>
