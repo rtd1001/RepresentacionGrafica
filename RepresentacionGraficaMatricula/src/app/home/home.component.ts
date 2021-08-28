@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { XlsDataService } from '../xls-data.service';
 import * as XLSX from 'xlsx';
 
 @Component({
@@ -11,9 +12,11 @@ export class HomeComponent implements OnInit {
 
   fileList = [];
   //worksheet: any[];
-  //xlsData: any[];
+  xlsData: any[] = [];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private _xlsData: XlsDataService) {
+
+   }
 
   ngOnInit(): void {
     console.log('HomeComponent INIT');
@@ -73,7 +76,7 @@ export class HomeComponent implements OnInit {
    //Función para leer y parsear cada uno de los archivos
    readFile(currentFile){
     var worksheet;
-    var xlsData = [];
+    //var xlsData = [];
     var reader = new FileReader();
     console.log(reader)
 
@@ -91,7 +94,8 @@ export class HomeComponent implements OnInit {
       xlsDataAux = this.readWorksheet(worksheet);
       //Almaceno los archivos parseados
     
-      xlsData.push(xlsDataAux);
+      this.xlsData.push(xlsDataAux);
+      this._xlsData.setXlsData(this.xlsData);
       /*if( worksheet[XLSX.utils.encode_cell({c:0, r:0})] === undefined ){
         alert('Ha introducido un archivo vacío. Vuelva a introducir otro archivo.');
         fileBtn.value = ''; 

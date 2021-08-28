@@ -8,6 +8,7 @@ import { DetailsComponent } from './details/details.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from "@angular/material/icon";
+import { XlsDataService } from './xls-data.service';
 
 
 @NgModule({
@@ -23,7 +24,7 @@ import { MatIconModule } from "@angular/material/icon";
     BrowserAnimationsModule,
     MatIconModule
   ],
-  providers: [],
+  providers: [XlsDataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
