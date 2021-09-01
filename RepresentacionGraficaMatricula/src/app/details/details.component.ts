@@ -23,4 +23,6 @@ export class DetailsComponent implements OnInit {
     console.log('detail');
     console.log(this.xlsData);
   }
+
+  
 }

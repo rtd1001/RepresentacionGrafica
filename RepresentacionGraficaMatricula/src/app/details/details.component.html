@@ -1,5 +1,11 @@
-<p>details works!</p>
 <button routerLink="/home" routerLinkActive="active">Ir a home</button>
 <router-outlet></router-outlet>
 
-<button (click)="viewData($event)">Ver data</button>
+<select id="chart-combo">
+    <option hidden selected>Seleccione una gráfica</option>
+    <option>Matriculados en grupos teóricos</option>
+    <option>Grafico 2</option>
+</select>
+
+
+<button (click)="viewData($event)">Añadir serie</button>
