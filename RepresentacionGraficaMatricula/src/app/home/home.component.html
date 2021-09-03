@@ -16,8 +16,8 @@
      
  </div>
 
-  <button routerLink="/details" (click)="sendFile($event)" routerLinkActive="active">Subir archivos</button>
+  <button [disabled]="! isValid" routerLink="/details"  routerLinkActive="active">Subir archivos</button>
   <router-outlet></router-outlet>
-  <button (click)="sendFile($event)">Añadir</button>
+  <button >Añadir</button>
 
 </div>

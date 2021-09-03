@@ -9,6 +9,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from "@angular/material/icon";
 import { XlsDataService } from './xls-data.service';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { XlsDataService } from './xls-data.service';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatIconModule
+    MatIconModule,
+    FormsModule 
   ],
   providers: [XlsDataService],
   bootstrap: [AppComponent]

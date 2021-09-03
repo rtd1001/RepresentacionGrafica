@@ -13,6 +13,7 @@ export class HomeComponent implements OnInit {
   fileList = [];
   //worksheet: any[];
   xlsData: any[] = [];
+  isValid = false;
 
   constructor(private router: Router, private _xlsData: XlsDataService) {
 
@@ -31,7 +32,7 @@ export class HomeComponent implements OnInit {
       //this.fileName.push(fileList[i]);
       this.validateFileExtension(currentFile);
     }
-
+    this.sendFile();
   }
 
   //Función para compprobar que la extensión del archivo/s sea la correcta
@@ -50,7 +51,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  sendFile(event){
+  sendFile(){
     var fileListRead = [];
     console.log(this.fileList)
     if(this.fileList != null){
@@ -92,6 +93,8 @@ export class HomeComponent implements OnInit {
       
       var xlsDataAux;
       xlsDataAux = this.readWorksheet(worksheet);
+      this.isValid = true;
+
       //Almaceno los archivos parseados
     
       this.xlsData.push(xlsDataAux);
