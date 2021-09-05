@@ -120,10 +120,12 @@ export class DetailsComponent implements OnInit {
   }
 
   resetYear(i){
-    //this.dynamicSeries[i].years = '';
+    //document.querySelectorAll('#selectYear option').forEach(option => option.remove())
   }
 
   resetSemester(i){
-    this.dynamicSeries[i].semesters = '';
+
   }
+
+  
 }

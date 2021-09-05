@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from "@angular/material/icon";
 import { XlsDataService } from './xls-data.service';
 import { FormsModule } from '@angular/forms';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { FormsModule } from '@angular/forms';
     AppRoutingModule,
     BrowserAnimationsModule,
     MatIconModule,
-    FormsModule 
+    FormsModule ,
+    NgApexchartsModule
   ],
   providers: [XlsDataService],
   bootstrap: [AppComponent]

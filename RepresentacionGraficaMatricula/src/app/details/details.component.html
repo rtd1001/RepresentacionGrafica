@@ -64,13 +64,13 @@
                 </select>
                 </td>
                 <td>
-                  <select #selectYear="ngModel" [(ngModel)]="dynamicSeries[i].years" (change)="changeYear(selectYear.value,i)" class="form-select">
+                  <select #selectYear="ngModel" [(ngModel)]="dynamicSeries[i].years" (change)="changeYear(selectYear.value,i)" id="selectYear" class="form-select">
                     <option hidden selected>Seleccione un curso</option>
                     <option *ngFor="let y of years" [ngValue]="y">{{ y }}</option>
                 </select>
                 </td>
                 <td>
-                  <select #selectSemester="ngModel" [(ngModel)]="dynamicSeries[i].semesters" (change)="changeSemester(selectSemester.value,i)" class="form-select">
+                  <select #selectSemester="ngModel" [(ngModel)]="dynamicSeries[i].semesters" (change)="changeSemester(selectSemester.value,i)" id="selectSemester" class="form-select">
                     <option hidden selected>Seleccione un semestre</option>
                     <option *ngFor="let s of semesters" [ngValue]="s">{{ s }}</option>
                 </select>
@@ -86,4 +86,8 @@
             </tr>
         </tbody>
     </table>
+  </div>
+
+  <div id="chart-container">
+    <canvas id="chart-1" width="800" height="450"></canvas>
   </div>
