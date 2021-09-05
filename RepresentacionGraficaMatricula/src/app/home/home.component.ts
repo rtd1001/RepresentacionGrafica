@@ -11,33 +11,42 @@ import * as XLSX from 'xlsx';
 export class HomeComponent implements OnInit {
 
   fileList = [];
+  actualFile : File;
   //worksheet: any[];
   xlsData: any[] = [];
   isValid = false;
-
+  fileNameDiv:any;
   constructor(private router: Router, private _xlsData: XlsDataService) {
 
    }
 
   ngOnInit(): void {
-    console.log('HomeComponent INIT');
+		this.fileNameDiv = document.querySelector("#fileName");
   }
 
   onFileSelected(event) {
-    
+    this.isValid = false;
+    var files =  event.target.files;
+    this.actualFile =files[0];
+    /*
     this.fileList = event.target.files;
     
     for(var i = 0; i < this.fileList.length; i++){
       var currentFile = this.fileList[i];
       //this.fileName.push(fileList[i]);
       this.validateFileExtension(currentFile);
-    }
+    }*/
+    this.validateFileExtension();
+
+    //this.fileNameDiv.innerHTML = "";
+    this.fileNameDiv.innerHTML += this.actualFile.name + "<br/>" + "<hr/>";
+
     this.sendFile();
   }
 
   //Función para compprobar que la extensión del archivo/s sea la correcta
-  validateFileExtension(currentFile){
-    var fileName = currentFile.name;
+  validateFileExtension(){
+    var fileName = this.actualFile.name;
     console.log(fileName)
 
     var ext = fileName.split('.').pop();
@@ -52,6 +61,7 @@ export class HomeComponent implements OnInit {
   }
 
   sendFile(){
+    /*
     var fileListRead = [];
     console.log(this.fileList)
     if(this.fileList != null){
@@ -68,14 +78,22 @@ export class HomeComponent implements OnInit {
         
       }
     }
-    
-    if(this.fileList.length == 1){
-     // $("#one-chart-combo").show();
-    }
+    */
+
+    if(this.actualFile != null){
+      
+      var readerAux;
+      readerAux = this.readFile(this.actualFile);
+      
+      readerAux.readAsBinaryString(this.actualFile);
+      
+      this.fileList.push(readerAux);
+        
+    }    
   }
 
    //Función para leer y parsear cada uno de los archivos
-   readFile(currentFile){
+  readFile(currentFile){
     var worksheet;
     //var xlsData = [];
     var reader = new FileReader();
@@ -99,6 +117,7 @@ export class HomeComponent implements OnInit {
     
       this.xlsData.push(xlsDataAux);
       this._xlsData.setXlsData(this.xlsData);
+      console.log(this.xlsData)
       /*if( worksheet[XLSX.utils.encode_cell({c:0, r:0})] === undefined ){
         alert('Ha introducido un archivo vacío. Vuelva a introducir otro archivo.');
         fileBtn.value = ''; 

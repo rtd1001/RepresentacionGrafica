@@ -1,5 +1,33 @@
+.container {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ text-align: left;
+ min-height: 100vh;
+}
 
+.child {
+  min-width: 450px;
+  border:1px solid #E1E1E1;
+  border-radius: 5px;
+  padding: 17px;
+}
 
 .file-input {
     display: none;
   }
+
+.accordion {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.with-icon {
+  display: flex;
+  align-items: center;
+}
+
+.bt-icon-left {
+  margin-right: 0;
+  margin-left: auto;
+}

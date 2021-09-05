@@ -1,23 +1,47 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
 <script lang="javascript" src="dist/xlsx.full.min.js"></script>
 
-<div class="container">
+<div class="container"> 
 
-  <input type="file" class="file-input" id="fileInput" (change)="onFileSelected($event)" #fileUpload multiple>
+  <div class="child">
 
-  <div class="file-upload">
+    <input type="file" class="file-input" id="fileInput" (change)="onFileSelected($event)" #fileUpload>
 
-    {{fileList || "No ha seleccionado ningún fichero."}}
- 
-     <button mat-fab color="primary" class="upload-btn"
-       (click)="fileUpload.click()">Añadir archivos
-       <mat-icon>add</mat-icon>
-     </button>
-     
- </div>
+    <div class="file-upload" >
 
-  <button [disabled]="! isValid" routerLink="/details"  routerLinkActive="active">Subir archivos</button>
-  <router-outlet></router-outlet>
-  <button >Añadir</button>
+      {{fileList || "No ha seleccionado ningún fichero."}}
+  
+      <button mat-button (click)="fileUpload.click()" class="btn btn-primary with-icon bt-icon-left">
+        <mat-icon>add</mat-icon> 
+        Añadir archivo
+      </button>
+      
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            Listado de archivos
+          </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            
+            <div id="fileName"></div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <button class="btn btn-primary" [disabled]="! isValid" routerLink="/details"  routerLinkActive="active">Subir archivos</button>
+    <router-outlet></router-outlet>
+
+  </div>
+  
+  
+  
 
 </div>
