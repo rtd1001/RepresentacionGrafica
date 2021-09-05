@@ -1,5 +1,5 @@
 export class Series {
-    degrees=[];
-    years=[];
-    semesters=[];
+    degrees:string;
+    years:string;
+    semesters:string;
 }

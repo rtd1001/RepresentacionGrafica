@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { XlsDataService } from '../xls-data.service';
 import { Series } from '../series';
+import { AngularMaterialModule } from 'src/angular-material.module';
 
 @Component({
   selector: 'app-details',
@@ -17,14 +18,20 @@ export class DetailsComponent implements OnInit {
 
   dynamicSeries: Array<Series> = [];
   dynamicAux: any = {};
-  i = 0;
-  degree: any = [];
 
+  degrees: any = [];
+  years: any = [];
+  semesters: any = [];
+  
+  selectedDegree: any = '';
+  selectedYear: any = '';
+  selectedSemester: any = '';
+ 
   ngOnInit(): void {
     this.xlsData = this._xlsData.getXlsData();
     this.dynamicAux = {degrees: "", years: "", semesters:""};
     this.dynamicSeries.push(this.dynamicAux);
-    this.degree = this.getDegree();
+    this.degrees = this.getDegree();
   }
 
   getDegree(){
@@ -49,49 +56,74 @@ export class DetailsComponent implements OnInit {
     var selectedChart  = opt.text;
   }
 
-  addRow(index) {  
+  addRow() {  
     this.dynamicAux = {degrees: "", years: "",semesters:""};
     this.dynamicSeries.push(this.dynamicAux);
     console.log(this.dynamicSeries);
     return true;
   }
 
-  setYear(index){
+  changeDegree(value, i){
 
-  }
-  /*
-  function() {
-    'use strict';
-  
-    this.angular
-      .module('myApp', [])
-      .controller('series', series);
-  
-    series.$inject = ['$scope'];
-  
-    function series($scope) {
-      $scope.rows = [{}];
-      $scope.nrows = [];
+    this.selectedDegree = value;
+    this.dynamicSeries[i].degrees = this.selectedDegree;
 
-      $scope.addSerie = function() {
-        $scope.rows.push({
+    this.resetYear(i);
+    this.resetSemester(i);
 
-        });
-      };
+    for(var j = 0; j < this.xlsData.length; j++){
+      var dataAux = this.xlsData[j];
+      var data = dataAux[this.selectedDegree].data;
 
-      $scope.setDegree = function(row) {
-        console.log("setDegree")
-        $scope.degree = []
-        for(var i = 0; i < this.xlsData.length; i++){
-          var data = this.xlsData[i];
-          var keys=Object.keys(data);
-          for(var j = 0; j < keys.length; j++){
-            var key = keys[j];
-            $scope.degree.push(data[key].name);
-          }
-        }
-      
+      var yearDuplicates = []
+      Object.keys(data).forEach( key => {
+        yearDuplicates.push(data[key].asig_curso);
+      });
+      var year = Array.from(new Set(yearDuplicates))
+   
+      for(var z = 0; z < year.length; z++){
+        this.years.push(year[z]);
       }
     }
-  }*/
+
+  }
+
+  changeYear(value, i){
+
+    this.selectedYear = value;
+    this.dynamicSeries[i].years = this.selectedYear;
+
+    this.resetSemester(i);
+
+    for(var j = 0; j < this.xlsData.length; j++){
+      var dataAux = this.xlsData[j];
+      var selectedInfo  = dataAux[this.selectedDegree].data.filter(row => (row.asig_curso == this.selectedYear));;
+      console.log(selectedInfo);
+      var semesterDuplicates  = []
+      Object.keys(selectedInfo).forEach( key => {
+        semesterDuplicates.push(selectedInfo[key].asig_vp);
+      });
+      var semester = Array.from(new Set(semesterDuplicates))
+      
+      for(var z = 0; z < semester.length; z++){
+        this.semesters.push(semester[z]);
+      }
+    }
+
+  }
+
+  changeSemester(value, i){
+
+    this.selectedSemester = value;
+    this.dynamicSeries[i].semesters = this.selectedSemester;
+
+  }
+
+  resetYear(i){
+    //this.dynamicSeries[i].years = '';
+  }
+
+  resetSemester(i){
+    this.dynamicSeries[i].semesters = '';
+  }
 }
