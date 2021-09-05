@@ -1,109 +1,80 @@
-<button routerLink="/home" routerLinkActive="active">Ir a home</button>
-<router-outlet></router-outlet>
 
-<select id="chart-combo" (change)="onChartSelected($event)">
-    <option hidden selected>Seleccione una gráfica</option>
-    <option>Matriculados en grupos teóricos</option>
-    <option>Grafico 2</option>
-</select>
+<div class="container">
 
-<!--
-<div ng-controller="series">
+    <button mat-button routerLink="/home" routerLinkActive="active" class="btn btn-primary btn-circle btn-lg">
+        <mat-icon>arrow_back</mat-icon> 
+    </button>
+    <router-outlet></router-outlet>
 
-    <button ng-click="addSerie()">Añadir serie</button>
+    <select id="chart-combo" (change)="onChartSelected($event)" class="form-select">
+        <option hidden selected>Seleccione una gráfica</option>
+        <option>Matriculados en grupos teóricos</option>
+        <option>Grafico 2</option>
+    </select>
 
-    <table frame="box" rules="all">
-        <thead>
-            <tr>
+    <div style="margin-top: 40px" (click)="addRow()">
+    
+        <button mat-button class="btn btn-primary with-icon bt-icon-right">
+            <mat-icon>add</mat-icon> 
+            Añadir serie
+        </button>
+      
+    </div>
 
-                <th>Grado</th>
-                <th>Curso</th>
-                <th>Semestre</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr></tr>
-            <tr ng-repeat="r in rows">
-                <td>
-                    <select ng-model="r.degree" ng-onload="setDegree(r)" ng-change="setDegree(r)" ng-options="d.degree for d in degree">
+    <div style="margin-top: 10px">
+        <table class="table-light">
+            <thead>
+                <tr>
+                    <th>Grado</th>
+                    <th>Curso</th>
+                    <th>Semestre</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let dynamic of dynamicSeries; let i = index;">
+                    <td>
+                    <select #selectDegre="ngModel" ngModel="dynamicSeries[i].degrees" (change)="changeDegree(selectDegre.value,i)" id="selectDegre" class="form-select">
                         <option value="">Seleccione un grado</option>
-                        <option value="">Seleccione un</option>
+                        <option *ngFor="let d of degrees" [ngValue]="d">{{ d }}</option>
                     </select>
-                </td>
-                <td>
-                    <select ng-model="r.year" ng-change="getProductDetails(r)" ng-options="p.year for p in product">
-                        <option value="">Seleccione un curso</option>
+                    </td>
+                    <td>
+                    <select #selectYear="ngModel" [(ngModel)]="dynamicSeries[i].years" (change)="changeYear(selectYear.value,i)" id="selectYear" class="form-select">
+                        <option hidden selected>Seleccione un curso</option>
+                        <option *ngFor="let y of years" [ngValue]="y">{{ y }}</option>
                     </select>
-                </td>
-                <td>
-                    <select ng-model="r.semester" ng-change="getProductDetails(r)" ng-options="p.semester for p in product">
-                        <option value="">Seleccione un semestre</option>
+                    </td>
+                    <td>
+                    <select #selectSemester="ngModel" [(ngModel)]="dynamicSeries[i].semesters" (change)="changeSemester(selectSemester.value,i)" id="selectSemester" class="form-select">
+                        <option hidden selected>Seleccione un semestre</option>
+                        <option *ngFor="let s of semesters" [ngValue]="s">{{ s }}</option>
                     </select>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
--->
-
-<div class="container" style="margin-top: 5%">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Grado</th>
-                <th>Curso</th>
-                <th>Semestre</th>
-            </tr>
-        </thead>
-        <tbody>
-             <tr *ngFor="let dynamic of dynamicSeries; let i = index;">
-                <td>
-                  <select #selectDegre="ngModel" ngModel="dynamicSeries[i].degrees" (change)="changeDegree(selectDegre.value,i)" id="selectDegre" class="form-select">
-                    <option value="">Seleccione un grado</option>
-                    <option *ngFor="let d of degrees" [ngValue]="d">{{ d }}</option>
-                </select>
-                </td>
-                <td>
-                  <select #selectYear="ngModel" [(ngModel)]="dynamicSeries[i].years" (change)="changeYear(selectYear.value,i)" id="selectYear" class="form-select">
-                    <option hidden selected>Seleccione un curso</option>
-                    <option *ngFor="let y of years" [ngValue]="y">{{ y }}</option>
-                </select>
-                </td>
-                <td>
-                  <select #selectSemester="ngModel" [(ngModel)]="dynamicSeries[i].semesters" (change)="changeSemester(selectSemester.value,i)" id="selectSemester" class="form-select">
-                    <option hidden selected>Seleccione un semestre</option>
-                    <option *ngFor="let s of semesters" [ngValue]="s">{{ s }}</option>
-                </select>
-                </td>
-            </tr>
-            <tr>
-               <td></td> 
-               <td></td>
-               <td></td>
-                <td (click)="addRow()">
-                    <button>Añadir serie</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
   </div>
 
   <!--<div id="chart-container">
     <canvas id="chart-1" width="800" height="450"></canvas>
   </div>-->
-<!--
-<div id="chart">
-    <apx-chart
-      [series]="chartOptions.series"
-      [chart]="chartOptions.chart"
-      [dataLabels]="chartOptions.dataLabels"
-      [plotOptions]="chartOptions.plotOptions"
-      [responsive]="chartOptions.responsive"
-      [xaxis]="chartOptions.xaxis"
-      [legend]="chartOptions.legend"
-      [fill]="chartOptions.fill"
-    ></apx-chart>
-  </div>
--->
+    <!--
+    <div id="chart">
+        <apx-chart
+        [series]="chartOptions.series"
+        [chart]="chartOptions.chart"
+        [dataLabels]="chartOptions.dataLabels"
+        [plotOptions]="chartOptions.plotOptions"
+        [responsive]="chartOptions.responsive"
+        [xaxis]="chartOptions.xaxis"
+        [legend]="chartOptions.legend"
+        [fill]="chartOptions.fill"
+        ></apx-chart>
+    </div>
+    -->
+
+</div>
+
   
   
