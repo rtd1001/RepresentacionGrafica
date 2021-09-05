@@ -1,8 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { XlsDataService } from '../xls-data.service';
 import { Series } from '../series';
 import { AngularMaterialModule } from 'src/angular-material.module';
+
+import {
+  ApexAxisChartSeries,
+  ApexChart,
+  ChartComponent,
+  ApexDataLabels,
+  ApexPlotOptions,
+  ApexResponsive,
+  ApexXAxis,
+  ApexLegend,
+  ApexFill
+} from "ng-apexcharts";
+
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  dataLabels: ApexDataLabels;
+  plotOptions: ApexPlotOptions;
+  responsive: ApexResponsive[];
+  xaxis: ApexXAxis;
+  legend: ApexLegend;
+  fill: ApexFill;
+};
 
 @Component({
   selector: 'app-details',
@@ -127,5 +150,5 @@ export class DetailsComponent implements OnInit {
 
   }
 
-  
+
 }

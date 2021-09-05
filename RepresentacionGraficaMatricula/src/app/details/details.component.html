@@ -59,7 +59,7 @@
              <tr *ngFor="let dynamic of dynamicSeries; let i = index;">
                 <td>
                   <select #selectDegre="ngModel" ngModel="dynamicSeries[i].degrees" (change)="changeDegree(selectDegre.value,i)" id="selectDegre" class="form-select">
-                    <option selected>Seleccione un grado</option>
+                    <option value="">Seleccione un grado</option>
                     <option *ngFor="let d of degrees" [ngValue]="d">{{ d }}</option>
                 </select>
                 </td>
@@ -88,6 +88,22 @@
     </table>
   </div>
 
-  <div id="chart-container">
+  <!--<div id="chart-container">
     <canvas id="chart-1" width="800" height="450"></canvas>
+  </div>-->
+<!--
+<div id="chart">
+    <apx-chart
+      [series]="chartOptions.series"
+      [chart]="chartOptions.chart"
+      [dataLabels]="chartOptions.dataLabels"
+      [plotOptions]="chartOptions.plotOptions"
+      [responsive]="chartOptions.responsive"
+      [xaxis]="chartOptions.xaxis"
+      [legend]="chartOptions.legend"
+      [fill]="chartOptions.fill"
+    ></apx-chart>
   </div>
+-->
+  
+  
