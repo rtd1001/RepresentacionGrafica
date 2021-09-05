@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { XlsDataService } from '../xls-data.service';
+import { XlsDataService } from '../services/xls-data.service';
 import { Series } from '../series';
 import { AngularMaterialModule } from 'src/angular-material.module';
 

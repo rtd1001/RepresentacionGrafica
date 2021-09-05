@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { XlsDataService } from '../xls-data.service';
+import { XlsDataService } from '../services/xls-data.service';
 import * as XLSX from 'xlsx';
 
 @Component({
