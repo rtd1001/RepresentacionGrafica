@@ -10,7 +10,7 @@ export class XlsDataService {
     return this.xlsData;
   }
 
-  setXlsData(data:any[]){
+  setXlsData(data:{}){
     this.xlsData = data;
   }
 }

@@ -35,6 +35,9 @@ export type ChartOptions = {
  
 export class DetailsComponent implements OnInit {
 
+  @ViewChild("chart") chart: ChartComponent;
+  public chartOptions: Partial<ChartOptions>;
+
   xlsData: any[];
 
   constructor(private router: Router, private _xlsData: XlsDataService) { }
@@ -49,18 +52,23 @@ export class DetailsComponent implements OnInit {
   selectedDegree: any = '';
   selectedYear: any = '';
   selectedSemester: any = '';
+  selectedChart: any = '';
  
   ngOnInit(): void {
     this.xlsData = this._xlsData.getXlsData();
     this.dynamicAux = {degrees: "", years: "", semesters:""};
     this.dynamicSeries.push(this.dynamicAux);
     this.degrees = this.getDegree();
+    console.log(this.xlsData)
   }
 
   getDegree(){
+    console.log('hola1')
     var degree = [];
-    for(var i = 0; i < this.xlsData.length; i++){
-      var data = this.xlsData[i];
+    console.log('hola2')
+    var xlsDataVal = Object.values(this.xlsData);
+    for(var i = 0; i < xlsDataVal.length; i++){
+      var data = xlsDataVal[i];
       var keys=Object.keys(data);
       for(var j = 0; j < keys.length; j++){
         var key = keys[j];
@@ -74,9 +82,10 @@ export class DetailsComponent implements OnInit {
   onChartSelected(event){
     var chartCombo = document.getElementById("chart-combo")
     var e = (document.getElementById("chart-combo")) as HTMLSelectElement;
-    var sel = e.selectedIndex;
-    var opt = e.options[sel];
-    var selectedChart  = opt.text;
+    this.selectedChart = e.selectedIndex;
+    /*var opt = e.options[sel];
+    this.selectedChart  = opt.text;
+    console.log(sel)*/
   }
 
   addRow() {  
@@ -94,8 +103,9 @@ export class DetailsComponent implements OnInit {
     this.resetYear(i);
     this.resetSemester(i);
 
-    for(var j = 0; j < this.xlsData.length; j++){
-      var dataAux = this.xlsData[j];
+    var xlsDataVal = Object.values(this.xlsData);
+    for(var j = 0; j < xlsDataVal.length; j++){
+      var dataAux = xlsDataVal[j];
       var data = dataAux[this.selectedDegree].data;
 
       var yearDuplicates = []
@@ -110,7 +120,7 @@ export class DetailsComponent implements OnInit {
     }
 
   }
-
+ 
   changeYear(value, i){
 
     this.selectedYear = value;
@@ -118,8 +128,9 @@ export class DetailsComponent implements OnInit {
 
     this.resetSemester(i);
 
-    for(var j = 0; j < this.xlsData.length; j++){
-      var dataAux = this.xlsData[j];
+    var xlsDataVal = Object.values(this.xlsData);
+    for(var j = 0; j < xlsDataVal.length; j++){
+      var dataAux = xlsDataVal[j];
       var selectedInfo  = dataAux[this.selectedDegree].data.filter(row => (row.asig_curso == this.selectedYear));;
       console.log(selectedInfo);
       var semesterDuplicates  = []
@@ -150,5 +161,17 @@ export class DetailsComponent implements OnInit {
 
   }
 
+  createChart(){
+    switch(this.selectedChart){
+      case 1:
+        this.createBarChart();
+        break;
+      case 2:
+        break;
+    }
+  }
 
+  createBarChart(){
+
+  }
 }

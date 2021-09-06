@@ -13,7 +13,8 @@ export class HomeComponent implements OnInit {
   fileList = [];
   actualFile : File;
   //worksheet: any[];
-  xlsData: any[] = [];
+  //xlsData: any[] = [];
+  xlsData = {};
   isValid = false;
   fileNameDiv:any;
   constructor(private router: Router, private _xlsData: XlsDataService) {
@@ -114,8 +115,8 @@ export class HomeComponent implements OnInit {
       this.isValid = true;
 
       //Almaceno los archivos parseados
-    
-      this.xlsData.push(xlsDataAux);
+      this.xlsData[currentFile.name] = xlsDataAux;
+      //this.xlsData.push(xlsDataAux);
       this._xlsData.setXlsData(this.xlsData);
       console.log(this.xlsData)
       /*if( worksheet[XLSX.utils.encode_cell({c:0, r:0})] === undefined ){

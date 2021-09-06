@@ -30,3 +30,8 @@ table tr {
 table tr:last-child { 
   border-bottom: none; 
 }
+
+#chart {
+  max-width: 650px;
+  margin: 35px auto;
+}
