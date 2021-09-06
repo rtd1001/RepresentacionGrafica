@@ -25,13 +25,20 @@
         <table class="table-light">
             <thead>
                 <tr>
+                    <th>Documento</th>
                     <th>Grado</th>
                     <th>Curso</th>
                     <th>Semestre</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let dynamic of dynamicSeries; let i = index;">
+                <tr *ngFor="let dynamic of dynamicSeries;let i = index;">
+                    <td>
+                        <select #selectDoc="ngModel" ngModel="dynamicSeries[i].docs" (change)="changeDoc(selectDoc.value,i)" id="selectDoc" class="form-select">
+                            <option value="">Seleccione un documento</option>
+                            <option *ngFor="let x of docs" [ngValue]="x">{{ x }}</option>
+                        </select>
+                        </td>
                     <td>
                     <select #selectDegre="ngModel" ngModel="dynamicSeries[i].degrees" (change)="changeDegree(selectDegre.value,i)" id="selectDegre" class="form-select">
                         <option value="">Seleccione un grado</option>

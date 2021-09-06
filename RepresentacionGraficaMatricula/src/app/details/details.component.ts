@@ -48,7 +48,9 @@ export class DetailsComponent implements OnInit {
   degrees: any = [];
   years: any = [];
   semesters: any = [];
+  docs: any = [];
   
+  selectedDoc: any = '';
   selectedDegree: any = '';
   selectedYear: any = '';
   selectedSemester: any = '';
@@ -58,14 +60,23 @@ export class DetailsComponent implements OnInit {
     this.xlsData = this._xlsData.getXlsData();
     this.dynamicAux = {degrees: "", years: "", semesters:""};
     this.dynamicSeries.push(this.dynamicAux);
-    this.degrees = this.getDegree();
+    //this.degrees = this.getDegree();
+    this.docs = this.getDoc();
     console.log(this.xlsData)
   }
 
+  getDoc(){
+    var doc = [];
+    var xlsDataKey = Object.keys(this.xlsData);
+    for(var i = 0; i < xlsDataKey.length; i++){
+      doc.push(xlsDataKey[i]);
+    }
+    return doc;
+  }
+/*
   getDegree(){
-    console.log('hola1')
     var degree = [];
-    console.log('hola2')
+
     var xlsDataVal = Object.values(this.xlsData);
     for(var i = 0; i < xlsDataVal.length; i++){
       var data = xlsDataVal[i];
@@ -78,7 +89,7 @@ export class DetailsComponent implements OnInit {
 
     return degree;
   }
-
+*/
   onChartSelected(event){
     var chartCombo = document.getElementById("chart-combo")
     var e = (document.getElementById("chart-combo")) as HTMLSelectElement;
@@ -95,6 +106,31 @@ export class DetailsComponent implements OnInit {
     return true;
   }
 
+  changeDoc(value, i){
+    
+    this.selectedDoc = value;
+    this.dynamicSeries[i].docs = this.selectedDoc;
+    
+    var info = this.xlsData[this.selectedDoc];
+    var xlsDataKey = Object.keys(info);
+
+    var degreData = Object.values(xlsDataKey);
+    for(var j = 0; j < degreData.length; j++){
+      this.degrees.push(degreData[j]);
+    }
+
+    /*
+    for(var j = 0; j < xlsDataVal.length; j++){
+      var data = xlsDataVal[i];
+      var keys=Object.keys(data);
+      for(var j = 0; j < keys.length; j++){
+        var key = keys[j];
+        degree.push(data[key].name);
+      }
+    }*/
+    
+  }
+
   changeDegree(value, i){
 
     this.selectedDegree = value;
@@ -103,6 +139,22 @@ export class DetailsComponent implements OnInit {
     this.resetYear(i);
     this.resetSemester(i);
 
+    var info = this.xlsData[this.selectedDoc];
+
+    var data = info[this.selectedDegree].data;
+    
+    var yearDuplicates = []
+    Object.keys(data).forEach( key => {
+      yearDuplicates.push(data[key].asig_curso);
+    });
+    console.log('yearD' + yearDuplicates)
+    var year = Array.from(new Set(yearDuplicates))
+    console.log('year' + year)
+    for(var z = 0; z < year.length; z++){
+      this.years.push(year[z]);
+    }
+    
+    /*
     var xlsDataVal = Object.values(this.xlsData);
     for(var j = 0; j < xlsDataVal.length; j++){
       var dataAux = xlsDataVal[j];
@@ -118,7 +170,7 @@ export class DetailsComponent implements OnInit {
         this.years.push(year[z]);
       }
     }
-
+    */
   }
  
   changeYear(value, i){
@@ -128,6 +180,22 @@ export class DetailsComponent implements OnInit {
 
     this.resetSemester(i);
 
+    var info = this.xlsData[this.selectedDoc];
+
+    var selectedInfo  = info[this.selectedDegree].data.filter(row => (row.asig_curso == this.selectedYear));;
+    
+    var semesterDuplicates  = []
+    Object.keys(selectedInfo).forEach( key => {
+      semesterDuplicates.push(selectedInfo[key].asig_vp);
+    });
+    var semester = Array.from(new Set(semesterDuplicates))
+    
+    for(var z = 0; z < semester.length; z++){
+      this.semesters.push(semester[z]);
+    }
+  
+      
+    /*
     var xlsDataVal = Object.values(this.xlsData);
     for(var j = 0; j < xlsDataVal.length; j++){
       var dataAux = xlsDataVal[j];
@@ -142,7 +210,7 @@ export class DetailsComponent implements OnInit {
       for(var z = 0; z < semester.length; z++){
         this.semesters.push(semester[z]);
       }
-    }
+    }*/
 
   }
 
