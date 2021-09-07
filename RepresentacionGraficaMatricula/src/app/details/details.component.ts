@@ -5,26 +5,56 @@ import { Series } from '../series';
 import { AngularMaterialModule } from 'src/angular-material.module';
 
 import {
-  ApexAxisChartSeries,
   ApexChart,
+  ApexAxisChartSeries,
   ChartComponent,
   ApexDataLabels,
   ApexPlotOptions,
-  ApexResponsive,
-  ApexXAxis,
+  ApexYAxis,
   ApexLegend,
-  ApexFill
+  ApexStates,
+  ApexGrid,
+  ApexTitleSubtitle
 } from "ng-apexcharts";
+
+type ApexXAxis = {
+  type?: "category" | "datetime" | "numeric";
+  categories?: any;
+  labels?: {
+    style?: {
+      colors?: string | string[];
+      fontSize?: string;
+    };
+  };
+};
+
+var colors = [
+  '#2685CB', 
+  '#4AD95A', 
+  '#FEC81B', 
+  '#FD8D14', 
+  '#CE00E6', 
+  '#4B4AD3', 
+  '#FC3026', 
+  '#B8CCE3', 
+  '#6ADC88', 
+  '#FEE45F' 
+];
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
   chart: ApexChart;
   dataLabels: ApexDataLabels;
   plotOptions: ApexPlotOptions;
-  responsive: ApexResponsive[];
+  yaxis: ApexYAxis;
   xaxis: ApexXAxis;
+  grid: ApexGrid;
+  subtitle: ApexTitleSubtitle;
+  colors: string[];
+  states: ApexStates;
+  title: ApexTitleSubtitle;
   legend: ApexLegend;
-  fill: ApexFill;
+  tooltip: any; //ApexTooltip;
 };
 
 @Component({
@@ -32,7 +62,7 @@ export type ChartOptions = {
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.css']
 })
- 
+
 export class DetailsComponent implements OnInit {
 
   @ViewChild("chart") chart: ChartComponent;
@@ -55,6 +85,8 @@ export class DetailsComponent implements OnInit {
   selectedYear: any = '';
   selectedSemester: any = '';
   selectedChart: any = '';
+
+  loaded: boolean = false;
  
   ngOnInit(): void {
     this.xlsData = this._xlsData.getXlsData();
@@ -240,6 +272,163 @@ export class DetailsComponent implements OnInit {
   }
 
   createBarChart(){
+    this.chartOptions ={
+      series: [
+        {
+          name: "year",
+          data: this.makeData()
+        }
+      ],
+      chart: {
+        id: "barYear",
+        height: 400,
+        width: "100%",
+        type: "bar",
+        /*events: {
+          dataPointSelection: (e, chart, opts) => {
+            var quarterChartEl = document.querySelector("#chart-quarter");
+            var yearChartEl = document.querySelector("#chart-year");
 
+            if (opts.selectedDataPoints[0].length === 1) {
+              if (quarterChartEl.classList.contains("active")) {
+                this.updateQuarterChart(chart, "barQuarter");
+              } else {
+                yearChartEl.classList.add("chart-quarter-activated");
+                quarterChartEl.classList.add("active");
+                this.updateQuarterChart(chart, "barQuarter");
+              }
+            } else {
+              this.updateQuarterChart(chart, "barQuarter");
+            }
+
+            if (opts.selectedDataPoints[0].length === 0) {
+              yearChartEl.classList.remove("chart-quarter-activated");
+              quarterChartEl.classList.remove("active");
+            }
+          },
+          updated: (chart) => {
+            this.updateQuarterChart(chart, "barQuarter");
+          }
+        }*/
+      },
+      plotOptions: {
+        bar: {
+          distributed: true,
+          horizontal: false,
+          barHeight: "75%",
+          dataLabels: {
+            position: "bottom"
+          }
+        }
+      },
+      dataLabels: {
+        enabled: true,
+        textAnchor: "start",
+        style: {
+          colors: ["#fff"]
+        },
+        formatter: function(val, opt) {
+          return opt.w.globals.labels[opt.dataPointIndex];
+        },
+        offsetX: 0,
+        dropShadow: {
+          enabled: true
+        }
+      },
+
+      colors: colors,
+
+      states: {
+        normal: {
+          filter: {
+            type: "desaturate"
+          }
+        },
+        active: {
+          allowMultipleDataPointsSelection: true,
+          filter: {
+            type: "darken",
+            value: 1
+          }
+        }
+      },
+      tooltip: {
+        x: {
+          show: false
+        },
+        y: {
+          title: {
+            formatter: function(val, opts) {
+              return opts.w.globals.labels[opts.dataPointIndex];
+            }
+          }
+        }
+      },
+      title: {
+        text: "Matriculados en grupos teóricos",
+        offsetX: 15
+      },
+      subtitle: {
+        text: "(Haz click en la barra para ver detalles)",
+        offsetX: 15
+      },
+      yaxis: {
+        min: 0,
+        max:500,
+        tickAmount: 20,
+        labels: {
+          show: true
+        },
+      }
+    }
   }
+
+  makeData() : any{
+    
+    var total = [];
+    var dataSerie = [];
+    var dataGroup = [];
+    console.log(this.dynamicSeries)
+    for(var i = 0; i < this.dynamicSeries.length; i++){
+
+      var data = this.xlsData[this.dynamicSeries[i].docs];
+      console.log(this.dynamicSeries[i])
+
+      var info = data[this.dynamicSeries[i].degrees].data.filter(row => (row.asig_curso == this.dynamicSeries[i].years 
+        && row.asig_vp == this.dynamicSeries[i].semesters 
+        && row.asig_tipAcademica == 'Teoría' 
+        && row.asig_activ == 'S' ));
+
+      var groupsDuplicates = [];
+      Object.keys(info).forEach(key => {
+        groupsDuplicates.push(info[key].asig_grupo);
+      });
+
+      var groups = Array.from(new Set(groupsDuplicates));
+
+      var totalAux  = 0;
+      for(var j = 0; j < groups.length; j++){
+        
+        var info_group = info.filter(row => row.asig_grupo == groups[j])
+        console.log(info_group);
+        
+        Object.keys(info_group).forEach(key => {
+          console.log('total'+ info_group[key].alum_total)
+        });
+
+
+      }
+
+      dataSerie[i] = {
+        x: this.dynamicSeries[i].degrees,
+        y: totalAux,
+        color: colors[i]
+      }
+    }
+    this.loaded = true;
+    return dataSerie;
+  }
+
+
+
 }
