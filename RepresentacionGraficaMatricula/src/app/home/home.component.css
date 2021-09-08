@@ -7,10 +7,12 @@
 }
 
 .child {
-  min-width: 450px;
+ /* min-width: 450px;
   border:1px solid #E1E1E1;
   border-radius: 5px;
-  padding: 17px;
+  padding: 17px;*/
+  width:960px;
+  margin:0 auto;
 }
 
 .file-input {
