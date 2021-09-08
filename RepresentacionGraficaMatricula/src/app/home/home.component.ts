@@ -23,9 +23,11 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
 		this.fileNameDiv = document.querySelector("#fileName");
+    document.getElementById('sppiner').style.display = 'none';
   }
 
   onFileSelected(event) {
+    document.getElementById('sppiner').style.display = 'block';
     this.isValid = false;
     var files =  event.target.files;
     this.actualFile =files[0];
@@ -40,7 +42,7 @@ export class HomeComponent implements OnInit {
     this.validateFileExtension();
 
     //this.fileNameDiv.innerHTML = "";
-    this.fileNameDiv.innerHTML += this.actualFile.name + "<br/>" + "<hr/>";
+    
 
     this.sendFile();
   }
@@ -112,8 +114,11 @@ export class HomeComponent implements OnInit {
       
       var xlsDataAux;
       xlsDataAux = this.readWorksheet(worksheet);
-      this.isValid = true;
 
+      this.fileNameDiv.innerHTML += this.actualFile.name + "<br/>" + "<hr/>";
+      this.isValid = true;
+      document.getElementById('sppiner').style.display = 'none';
+      
       //Almaceno los archivos parseados
       this.xlsData[currentFile.name] = xlsDataAux;
       //this.xlsData.push(xlsDataAux);
