@@ -1,3 +1,7 @@
+body {
+  background: #fff;
+} 
+
 .container{
   padding: 20px;
 }
@@ -31,7 +35,58 @@ table tr:last-child {
   border-bottom: none; 
 }
 
-#chart {
-  max-width: 650px;
-  margin: 35px auto;
+
+#wrap {
+  margin: 45px auto;
+  max-width: 800px;
+  position: relative;
+}
+
+.chart-box {
+  padding-left: 0;
+}
+
+#bar-chart,
+#chart-info {
+  width: 96%;
+  max-width: 48%;
+  box-shadow: none;
+  padding-left: 0;
+  padding-top: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+}
+
+#bar-chart {
+  float: left;
+  position: relative;
+  transition: 1s ease transform;
+  z-index: 3;
+}
+
+#bar-chart.chart-info-activated {
+  transform: translateX(0);
+  transition: 1s ease transform;
+}
+
+#chart-info {
+  float: left;
+  position: relative;
+  z-index: -2;
+  transition: 1s ease transform;
+}
+
+#chart-info.active {
+  transition: 1.1s ease-in-out transform;
+  transform: translateX(0);
+  z-index: 1;
+}
+
+@media screen and (min-width: 240px) {
+  #bar-chart {
+    transform: translateX(50%);
+  }
+  #chart-info {
+    transform: translateX(-50%);
+  }
 }

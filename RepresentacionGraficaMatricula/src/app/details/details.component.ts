@@ -67,6 +67,7 @@ export class DetailsComponent implements OnInit {
 
   @ViewChild("chart") chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
+  public chartInfoOptions: Partial<ChartOptions>;
 
   xlsData: any[];
 
@@ -87,6 +88,7 @@ export class DetailsComponent implements OnInit {
   selectedChart: any = '';
 
   loaded: boolean = false;
+  //description: any = [];
  
   ngOnInit(): void {
     this.xlsData = this._xlsData.getXlsData();
@@ -179,9 +181,8 @@ export class DetailsComponent implements OnInit {
     Object.keys(data).forEach( key => {
       yearDuplicates.push(data[key].asig_curso);
     });
-    console.log('yearD' + yearDuplicates)
+    
     var year = Array.from(new Set(yearDuplicates))
-    console.log('year' + year)
     for(var z = 0; z < year.length; z++){
       this.years.push(year[z]);
     }
@@ -272,11 +273,13 @@ export class DetailsComponent implements OnInit {
   }
 
   createBarChart(){
+    var dataArray = this.makeData();
+
     this.chartOptions ={
       series: [
         {
           name: "year",
-          data: this.makeData()
+          data: dataArray[1]
         }
       ],
       chart: {
@@ -284,32 +287,32 @@ export class DetailsComponent implements OnInit {
         height: 400,
         width: "100%",
         type: "bar",
-        /*events: {
+        events: {
           dataPointSelection: (e, chart, opts) => {
-            var quarterChartEl = document.querySelector("#chart-quarter");
-            var yearChartEl = document.querySelector("#chart-year");
-
+            var chartInfoEl = document.querySelector("#chart-info");
+            var barChartEl = document.querySelector("#bar-chart");
+            console.log(opts)
             if (opts.selectedDataPoints[0].length === 1) {
-              if (quarterChartEl.classList.contains("active")) {
-                this.updateQuarterChart(chart, "barQuarter");
+              if (chartInfoEl.classList.contains("active")) {
+                this.updateQuarterChart(chart, "barInfo", dataArray);
               } else {
-                yearChartEl.classList.add("chart-quarter-activated");
-                quarterChartEl.classList.add("active");
-                this.updateQuarterChart(chart, "barQuarter");
+                barChartEl.classList.add("chart-info-activated");
+                chartInfoEl.classList.add("active");
+                this.updateQuarterChart(chart, "barInfo", dataArray);
               }
             } else {
-              this.updateQuarterChart(chart, "barQuarter");
+              this.updateQuarterChart(chart, "barInfo", dataArray);
             }
 
             if (opts.selectedDataPoints[0].length === 0) {
-              yearChartEl.classList.remove("chart-quarter-activated");
-              quarterChartEl.classList.remove("active");
+              barChartEl.classList.remove("chart-info-activated");
+              chartInfoEl.classList.remove("active");
             }
           },
           updated: (chart) => {
-            this.updateQuarterChart(chart, "barQuarter");
+            this.updateQuarterChart(chart, "barInfo", dataArray);
           }
-        }*/
+        }
       },
       plotOptions: {
         bar: {
@@ -381,14 +384,82 @@ export class DetailsComponent implements OnInit {
         },
       }
     }
+
+    this.chartInfoOptions = {
+      series: [
+        {
+          name: "Asignaturas",
+          data: []
+        }
+      ],
+      chart: {
+        id: "barInfo",
+        height: 400,
+        width: "100%",
+        type: "bar",
+        stacked: true
+      },
+      plotOptions: {
+        bar: {
+          columnWidth: "50%",
+          horizontal: false
+        }
+      },
+      legend: {
+        show: false
+      },
+      grid: {
+        yaxis: {
+          lines: {
+            show: false
+          }
+        },
+        xaxis: {
+          lines: {
+            show: true
+          }
+        }
+      },
+      xaxis: {
+        type: "category",
+        categories: []
+      },
+      yaxis: {
+        min: 0,
+        max: 100,
+        tickAmount: 20,
+      },
+      title: {
+        text: "Quarterly Results",
+        offsetX: 10
+      },
+      tooltip: {
+        x: {
+          formatter: function (val, opts) {
+            return opts.w.globals.seriesNames[opts.seriesIndex];
+          }
+        },
+        y: {
+          title: {
+            formatter: function (val, opts) {
+              return opts.w.globals.labels[opts.dataPointIndex];
+            }
+          }
+        }
+      }
+    }
+    
   }
 
+  
+
   makeData() : any{
-    
-    var total = [];
+
+    var returnArray = [];
     var dataSerie = [];
     var dataGroup = [];
-    console.log(this.dynamicSeries)
+    var descriptionArray = [];
+
     for(var i = 0; i < this.dynamicSeries.length; i++){
 
       var data = this.xlsData[this.dynamicSeries[i].docs];
@@ -400,35 +471,94 @@ export class DetailsComponent implements OnInit {
         && row.asig_activ == 'S' ));
 
       var groupsDuplicates = [];
+      var descriptionDuplicates = [];
       Object.keys(info).forEach(key => {
         groupsDuplicates.push(info[key].asig_grupo);
+        descriptionDuplicates.push(info[key].asig_descripcion);
       });
 
       var groups = Array.from(new Set(groupsDuplicates));
+      var description = Array.from(new Set(descriptionDuplicates));
+      descriptionArray.push(description);
 
-      var totalAux  = 0;
+      var total  = 0;
       for(var j = 0; j < groups.length; j++){
         
         var info_group = info.filter(row => row.asig_grupo == groups[j])
-        console.log(info_group);
-        
+
+        var totalEachGroup = []
         Object.keys(info_group).forEach(key => {
-          console.log('total'+ info_group[key].alum_total)
+          var group = {}
+          total += info_group[key].alum_total;
+        
+          totalEachGroup.push(info_group[key].alum_total)
+
+          group = {
+            x: "Grupo" + groups[j],
+            y: totalEachGroup
+          }
+
+          dataGroup[i] = group;
+
         });
 
-
+        
       }
 
       dataSerie[i] = {
         x: this.dynamicSeries[i].degrees,
-        y: totalAux,
+        y: total,
         color: colors[i]
       }
     }
     this.loaded = true;
-    return dataSerie;
+
+    returnArray.push(dataSerie);
+    returnArray.push(description);
+    returnArray.push(dataGroup);
+    console.log(returnArray)
+    return returnArray;
   }
 
+  public updateQuarterChart(sourceChart, destChartIDToUpdate, dataArray) {
+    var series = [];
+    var seriesIndex = 0;
+    var colors = [];
+    var categories = [];
 
+    if (sourceChart.w.globals.selectedDataPoints[0]) {
+      var selectedPoints = sourceChart.w.globals.selectedDataPoints;
+      for (var i = 0; i < selectedPoints[seriesIndex].length; i++) {
+        var selectedIndex = selectedPoints[seriesIndex][i];
+        var yearSeries = sourceChart.w.config.series[seriesIndex];
+        var arrayAux = dataArray[3];
+        for(var j = 0; j < arrayAux[selectedIndex].length; j++){
+          series.push({
+            name: yearSeries.data[selectedIndex].x,
+            data: arrayAux[j]
+          });
+          colors.push(yearSeries.data[selectedIndex].color);
+        }
+        var catAux = dataArray[2];
+        categories.push(categories[selectedIndex])
+        
+      }
+
+      if (series.length === 0)
+        series = [
+          {
+            data: []
+          }
+        ];
+
+      return window.ApexCharts.exec(destChartIDToUpdate, "updateOptions", {
+        series: series,
+        colors: colors,
+        fill: {
+          colors: colors
+        }
+      });
+    }
+  }
 
 }

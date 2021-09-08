@@ -82,23 +82,38 @@
     </div>
     
 -->
+<div id="wrap">
+    <div id="bar-chart" *ngIf="loaded">
+        <apx-chart
+          [series]="chartOptions.series"
+          [chart]="chartOptions.chart"
+          [dataLabels]="chartOptions.dataLabels"
+          [plotOptions]="chartOptions.plotOptions"
+          [yaxis]="chartOptions.yaxis"
+          [xaxis]="chartOptions.xaxis"
+          [subtitle]="chartOptions.subtitle"
+          [colors]="chartOptions.colors"
+          [states]="chartOptions.states"
+          [title]="chartOptions.title"
+          [tooltip]="chartOptions.tooltip"
+        ></apx-chart>
+      </div>
+    </div>
 
-<div id="bar-chart" *ngIf="loaded" style="margin-top: 30px">
-    <apx-chart
-      [series]="chartOptions.series"
-      [chart]="chartOptions.chart"
-      [dataLabels]="chartOptions.dataLabels"
-      [plotOptions]="chartOptions.plotOptions"
-      [yaxis]="chartOptions.yaxis"
-      [xaxis]="chartOptions.xaxis"
-      [subtitle]="chartOptions.subtitle"
-      [colors]="chartOptions.colors"
-      [states]="chartOptions.states"
-      [title]="chartOptions.title"
-      [tooltip]="chartOptions.tooltip"
-    ></apx-chart>
-  </div>
+    <div id="chart-info" *ngIf="loaded">
+        <apx-chart
+          [series]="chartInfoOptions.series"
+          [chart]="chartInfoOptions.chart"
+          [legend]="chartInfoOptions.legend"
+          [plotOptions]="chartInfoOptions.plotOptions"
+          [yaxis]="chartInfoOptions.yaxis"
+          [xaxis]="chartInfoOptions.xaxis"
+          [grid]="chartInfoOptions.grid"
+          [title]="chartInfoOptions.title"
+        ></apx-chart>
+      </div>
 </div>
+
 
   
   
