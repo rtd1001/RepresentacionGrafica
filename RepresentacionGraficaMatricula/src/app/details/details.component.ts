@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ResolvedReflectiveFactory, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { XlsDataService } from '../services/xls-data.service';
 import { Series } from '../series';
@@ -81,6 +81,12 @@ export class DetailsComponent implements OnInit {
   semesters: any = [];
   docs: any = [];
   
+  degreesList = {}
+  yearsList = {}
+  semestersList = {}
+  docsList = []
+
+
   selectedDoc: any = '';
   selectedDegree: any = '';
   selectedYear: any = '';
@@ -95,7 +101,8 @@ export class DetailsComponent implements OnInit {
     this.dynamicAux = {degrees: "", years: "", semesters:""};
     this.dynamicSeries.push(this.dynamicAux);
     //this.degrees = this.getDegree();
-    this.docs = this.getDoc();
+    //this.docs = this.getDoc();
+    this.docsList = this.getDoc();
     console.log(this.xlsData)
   }
 
@@ -133,7 +140,7 @@ export class DetailsComponent implements OnInit {
   }
 
   addRow() {  
-    this.dynamicAux = {degrees: "", years: "",semesters:""};
+    this.dynamicAux = {docs: "", degrees: "", years: "",semesters:""};
     this.dynamicSeries.push(this.dynamicAux);
     console.log(this.dynamicSeries);
     return true;
@@ -144,14 +151,20 @@ export class DetailsComponent implements OnInit {
     this.selectedDoc = value;
     this.dynamicSeries[i].docs = this.selectedDoc;
     
+    this.resetDegree(i);
+    this.resetYear(i);
+    this.resetSemester(i);
+
     var info = this.xlsData[this.selectedDoc];
     var xlsDataKey = Object.keys(info);
 
     var degreData = Object.values(xlsDataKey);
+    var listAux = [];
     for(var j = 0; j < degreData.length; j++){
-      this.degrees.push(degreData[j]);
+      listAux.push(degreData[j]);
     }
 
+    this.degreesList[i] = listAux;
     /*
     for(var j = 0; j < xlsDataVal.length; j++){
       var data = xlsDataVal[i];
@@ -182,10 +195,11 @@ export class DetailsComponent implements OnInit {
     });
     
     var year = Array.from(new Set(yearDuplicates))
+    var listAux = [];
     for(var z = 0; z < year.length; z++){
-      this.years.push(year[z]);
+      listAux.push(year[z]);
     }
-    
+    this.yearsList[i] = listAux;
     /*
     var xlsDataVal = Object.values(this.xlsData);
     for(var j = 0; j < xlsDataVal.length; j++){
@@ -221,11 +235,11 @@ export class DetailsComponent implements OnInit {
       semesterDuplicates.push(selectedInfo[key].asig_vp);
     });
     var semester = Array.from(new Set(semesterDuplicates))
-    
+    var listAux = []
     for(var z = 0; z < semester.length; z++){
-      this.semesters.push(semester[z]);
+      listAux.push(semester[z]);
     }
-  
+    this.semestersList[i] = listAux;
       
     /*
     var xlsDataVal = Object.values(this.xlsData);
@@ -253,16 +267,19 @@ export class DetailsComponent implements OnInit {
 
   }
 
+  resetDegree(i){
+    this.dynamicSeries[i].degrees = "";
+  }
+
   resetYear(i){
-    //document.querySelectorAll('#selectYear option').forEach(option => option.remove())
+    this.dynamicSeries[i].years = "";
   }
 
   resetSemester(i){
-
+    this.dynamicSeries[i].semesters = "";
   }
 
   createChart(){
-    console.log(this.selectedChart)
     if(this.selectedChart == 0){
       alert('No ha seleccionado una gráfica. Seleccione la gráfica que desea.');
     }
