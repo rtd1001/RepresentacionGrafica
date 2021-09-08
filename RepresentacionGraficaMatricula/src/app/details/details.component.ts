@@ -85,7 +85,7 @@ export class DetailsComponent implements OnInit {
   selectedDegree: any = '';
   selectedYear: any = '';
   selectedSemester: any = '';
-  selectedChart: any = '';
+  selectedChart = 0;
 
   loaded: boolean = false;
   //description: any = [];
@@ -125,7 +125,6 @@ export class DetailsComponent implements OnInit {
   }
 */
   onChartSelected(event){
-    var chartCombo = document.getElementById("chart-combo")
     var e = (document.getElementById("chart-combo")) as HTMLSelectElement;
     this.selectedChart = e.selectedIndex;
     /*var opt = e.options[sel];
@@ -263,6 +262,11 @@ export class DetailsComponent implements OnInit {
   }
 
   createChart(){
+    console.log(this.selectedChart)
+    if(this.selectedChart == 0){
+      alert('No ha seleccionado una gráfica. Seleccione la gráfica que desea.');
+    }
+
     switch(this.selectedChart){
       case 1:
         this.createBarChart();
