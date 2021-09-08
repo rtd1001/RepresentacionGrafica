@@ -17,9 +17,11 @@ export class HomeComponent implements OnInit {
   xlsData = {};
   isValid = false;
   fileNameDiv:any;
-  constructor(private router: Router, private _xlsData: XlsDataService) {
+  alert = false;
 
-   }
+  constructor(private router: Router, private _xlsData: XlsDataService) {
+   
+  }
 
   ngOnInit(): void {
 		this.fileNameDiv = document.querySelector("#fileName");
@@ -31,6 +33,7 @@ export class HomeComponent implements OnInit {
     this.isValid = false;
     var files =  event.target.files;
     this.actualFile =files[0];
+    console.log(this.actualFile)
     /*
     this.fileList = event.target.files;
     
@@ -43,8 +46,10 @@ export class HomeComponent implements OnInit {
 
     //this.fileNameDiv.innerHTML = "";
     
-
-    this.sendFile();
+    if(!this.alert){
+      this.sendFile();
+    }
+    
   }
 
   //Función para compprobar que la extensión del archivo/s sea la correcta
@@ -56,6 +61,9 @@ export class HomeComponent implements OnInit {
     ext = ext.toLowerCase();
 
     if(ext != 'xls'){
+      this.alert = true;
+
+      document.getElementById('sppiner').style.display = 'none';
       alert('El archivo ' + fileName +  ' no tiene la extensión adecuada. Vuelva a introducir otro archivo.');
       //fileBtn.value = ''; 
       var fileInput = document.getElementById("fileInput");
