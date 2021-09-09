@@ -291,13 +291,28 @@ export class DetailsComponent implements OnInit {
       alert('No ha seleccionado una gráfica. Seleccione la gráfica que desea.');
     }
 
-    switch(this.selectedChart){
-      case 1:
-        this.createBarChart();
-        break;
-      case 2:
-        break;
+    var ready = true;
+    for(var i=0; i < this.dynamicSeries.length; i++){
+        Object.keys(this.dynamicSeries[i]).forEach( key => {
+          if(this.dynamicSeries[i][key] === ""){
+            ready = false;
+            
+          }
+        });
     }
+
+    if(!ready){
+      alert('Las series no están completas. Termine de seleccionar las opciones.');
+    }else{
+      switch(this.selectedChart){
+        case 1:
+          this.createBarChart();
+          break;
+        case 2:
+          break;
+      }
+    }
+    
   }
 
   createBarChart(){
