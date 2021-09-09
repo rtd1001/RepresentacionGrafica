@@ -154,7 +154,7 @@ export class DetailsComponent implements OnInit {
   }
 
   changeDoc(value, i){
-    
+    this.resertChart();
     this.selectedDoc = value;
     this.dynamicSeries[i].docs = this.selectedDoc;
     
@@ -185,7 +185,7 @@ export class DetailsComponent implements OnInit {
   }
 
   changeDegree(value, i){
-
+    this.resertChart();
     this.selectedDegree = value;
     this.dynamicSeries[i].degrees = this.selectedDegree;
 
@@ -227,7 +227,7 @@ export class DetailsComponent implements OnInit {
   }
  
   changeYear(value, i){
-
+    this.resertChart();
     this.selectedYear = value;
     this.dynamicSeries[i].years = this.selectedYear;
 
@@ -268,7 +268,7 @@ export class DetailsComponent implements OnInit {
   }
 
   changeSemester(value, i){
-
+    this.resertChart();
     this.selectedSemester = value;
     this.dynamicSeries[i].semesters = this.selectedSemester;
 
@@ -284,6 +284,14 @@ export class DetailsComponent implements OnInit {
 
   resetSemester(i){
     this.dynamicSeries[i].semesters = "";
+  }
+
+  resertChart(){
+
+    if(this.loaded === true){
+      this.loaded = false;
+    }
+    
   }
 
   createChart(){
@@ -316,7 +324,6 @@ export class DetailsComponent implements OnInit {
   }
 
   createBarChart(){
-    var index = '';
     var result = this.makeData();
     
     this.chartOptions ={
@@ -537,8 +544,6 @@ export class DetailsComponent implements OnInit {
   makeData() : any{
 
     var dataSerie = [];
-
-    var arrayData = [];
 
     for(var i = 0; i < this.dynamicSeries.length; i++){
       var descriptionArray = [];
