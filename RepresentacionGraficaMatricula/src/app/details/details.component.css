@@ -35,12 +35,12 @@ table tr:last-child {
   border-bottom: none; 
 }
 
-
+/*
 #wrap {
   margin: 45px auto;
-  max-width: 800px;
+  max-width: 1000px;
   position: relative;
-}
+}*/
 
 .chart-box {
   padding-left: 0;
@@ -48,6 +48,7 @@ table tr:last-child {
 
 #bar-chart,
 #chart-info {
+  margin: 45px auto;
   width: 96%;
   max-width: 48%;
   box-shadow: none;

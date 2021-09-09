@@ -14,7 +14,8 @@ import {
   ApexLegend,
   ApexStates,
   ApexGrid,
-  ApexTitleSubtitle
+  ApexTitleSubtitle,
+  ApexResponsive
 } from "ng-apexcharts";
 
 type ApexXAxis = {
@@ -25,6 +26,9 @@ type ApexXAxis = {
       colors?: string | string[];
       fontSize?: string;
     };
+    show?: any;
+    rotate?: any;
+    hideOverlappingLabels?: any;
   };
 };
 
@@ -44,6 +48,7 @@ var colors = [
 export type ChartOptions = {
   series: ApexAxisChartSeries;
   chart: ApexChart;
+  responsive: ApexResponsive[];
   dataLabels: ApexDataLabels;
   plotOptions: ApexPlotOptions;
   yaxis: ApexYAxis;
@@ -56,6 +61,7 @@ export type ChartOptions = {
   legend: ApexLegend;
   tooltip: any; //ApexTooltip;
 };
+
 
 @Component({
   selector: 'app-details',
@@ -94,6 +100,7 @@ export class DetailsComponent implements OnInit {
   selectedChart = 0;
 
   loaded: boolean = false;
+  loaded2: boolean = false;
   //description: any = [];
  
   ngOnInit(): void {
@@ -294,13 +301,14 @@ export class DetailsComponent implements OnInit {
   }
 
   createBarChart(){
-    var dataArray = this.makeData();
-
+    var index = '';
+    var result = this.makeData();
+    
     this.chartOptions ={
       series: [
         {
           name: "year",
-          data: dataArray[1]
+          data: result
         }
       ],
       chart: {
@@ -309,20 +317,22 @@ export class DetailsComponent implements OnInit {
         width: "100%",
         type: "bar",
         events: {
+          
           dataPointSelection: (e, chart, opts) => {
             var chartInfoEl = document.querySelector("#chart-info");
             var barChartEl = document.querySelector("#bar-chart");
+            this.loaded2 = true;
             console.log(opts)
+            //index = opts.selectedDataPoints
             if (opts.selectedDataPoints[0].length === 1) {
+
               if (chartInfoEl.classList.contains("active")) {
-                this.updateQuarterChart(chart, "barInfo", dataArray);
+                //this.updateQuarterChart(chart, "barInfo");
               } else {
                 barChartEl.classList.add("chart-info-activated");
                 chartInfoEl.classList.add("active");
-                this.updateQuarterChart(chart, "barInfo", dataArray);
+                this.updateInfoChart(chart, "barInfo");
               }
-            } else {
-              this.updateQuarterChart(chart, "barInfo", dataArray);
             }
 
             if (opts.selectedDataPoints[0].length === 0) {
@@ -331,22 +341,32 @@ export class DetailsComponent implements OnInit {
             }
           },
           updated: (chart) => {
-            this.updateQuarterChart(chart, "barInfo", dataArray);
+            this.updateInfoChart(chart, "barInfo");
           }
         }
       },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            legend: {
+              position: "bottom",
+              offsetX: -10,
+              offsetY: 0
+            }
+          }
+        }
+      ],
       plotOptions: {
         bar: {
           distributed: true,
           horizontal: false,
           barHeight: "75%",
-          dataLabels: {
-            position: "bottom"
-          }
+          
         }
       },
       dataLabels: {
-        enabled: true,
+        enabled: false,
         textAnchor: "start",
         style: {
           colors: ["#fff"]
@@ -369,7 +389,7 @@ export class DetailsComponent implements OnInit {
           }
         },
         active: {
-          allowMultipleDataPointsSelection: true,
+          allowMultipleDataPointsSelection: false,
           filter: {
             type: "darken",
             value: 1
@@ -389,7 +409,7 @@ export class DetailsComponent implements OnInit {
         }
       },
       title: {
-        text: "Matriculados en grupos teóricos",
+        text: "Total de matriculados en grupos teóricos",
         offsetX: 15
       },
       subtitle: {
@@ -403,9 +423,14 @@ export class DetailsComponent implements OnInit {
         labels: {
           show: true
         },
+      },
+      xaxis:{
+        labels: {
+          show: false
+        }
       }
     }
-
+    
     this.chartInfoOptions = {
       series: [
         {
@@ -420,19 +445,33 @@ export class DetailsComponent implements OnInit {
         type: "bar",
         stacked: true
       },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            legend: {
+              position: "bottom",
+              offsetX: -10,
+              offsetY: 0
+            }
+          }
+        }
+      ],
       plotOptions: {
         bar: {
-          columnWidth: "50%",
+          columnWidth: "60%",
           horizontal: false
         }
       },
       legend: {
-        show: false
+        show: true,
+        position: 'right',
+        offsetY: 40
       },
       grid: {
         yaxis: {
           lines: {
-            show: false
+            show: true
           }
         },
         xaxis: {
@@ -442,17 +481,22 @@ export class DetailsComponent implements OnInit {
         }
       },
       xaxis: {
-        type: "category",
-        categories: []
+        labels:{
+          rotate: 0,
+          hideOverlappingLabels: false
+        }
       },
       yaxis: {
         min: 0,
-        max: 100,
+        max: 200,
         tickAmount: 20,
       },
       title: {
-        text: "Quarterly Results",
+        text: "Matriculados en cada asignatura por grupo teórico",
         offsetX: 10
+      },
+      subtitle: {
+        
       },
       tooltip: {
         x: {
@@ -470,18 +514,19 @@ export class DetailsComponent implements OnInit {
       }
     }
     
+    
   }
 
   
 
   makeData() : any{
 
-    var returnArray = [];
     var dataSerie = [];
-    var dataGroup = [];
-    var descriptionArray = [];
+
+    var arrayData = [];
 
     for(var i = 0; i < this.dynamicSeries.length; i++){
+      var descriptionArray = [];
 
       var data = this.xlsData[this.dynamicSeries[i].docs];
       console.log(this.dynamicSeries[i])
@@ -503,68 +548,79 @@ export class DetailsComponent implements OnInit {
       descriptionArray.push(description);
 
       var total  = 0;
+      var groupInfo = [];
       for(var j = 0; j < groups.length; j++){
         
         var info_group = info.filter(row => row.asig_grupo == groups[j])
 
         var totalEachGroup = []
         Object.keys(info_group).forEach(key => {
-          var group = {}
+          
           total += info_group[key].alum_total;
-        
           totalEachGroup.push(info_group[key].alum_total)
-
-          group = {
-            x: "Grupo" + groups[j],
-            y: totalEachGroup
-          }
-
-          dataGroup[i] = group;
-
         });
 
         
-      }
+        groupInfo[j] = {
+          x: "Grupo" + groups[j], 
+          y: totalEachGroup
+        }
 
+      }
       dataSerie[i] = {
         x: this.dynamicSeries[i].degrees,
         y: total,
-        color: colors[i]
+        color: colors[i],
+        chartInfo: groupInfo,
+        des: descriptionArray
       }
+     
     }
     this.loaded = true;
 
-    returnArray.push(dataSerie);
-    returnArray.push(description);
-    returnArray.push(dataGroup);
-    console.log(returnArray)
-    return returnArray;
+    return dataSerie;
   }
 
-  public updateQuarterChart(sourceChart, destChartIDToUpdate, dataArray) {
+  public updateInfoChart(sourceChart, destChartIDToUpdate) {
+    
     var series = [];
-    var seriesIndex = 0;
-    var colors = [];
     var categories = [];
+    var seriesIndex = 0;
+    var colorsArray = ['#00B3E6', 
+    '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D','#FF6633', '#FFB399', '#FF33FF', '#FFFF99'];
+    var colors = [];
+    var degreeName = '';
 
     if (sourceChart.w.globals.selectedDataPoints[0]) {
       var selectedPoints = sourceChart.w.globals.selectedDataPoints;
       for (var i = 0; i < selectedPoints[seriesIndex].length; i++) {
         var selectedIndex = selectedPoints[seriesIndex][i];
         var yearSeries = sourceChart.w.config.series[seriesIndex];
-        var arrayAux = dataArray[3];
-        for(var j = 0; j < arrayAux[selectedIndex].length; j++){
-          series.push({
-            name: yearSeries.data[selectedIndex].x,
-            data: arrayAux[j]
-          });
-          colors.push(yearSeries.data[selectedIndex].color);
-        }
-        var catAux = dataArray[2];
-        categories.push(categories[selectedIndex])
+        degreeName = yearSeries.data[selectedIndex].x;
+        var getInfo = yearSeries.data[selectedIndex].chartInfo;
         
-      }
+        for(var j = 0; j < getInfo.length; j++){
+          series.push({
+            name: getInfo[j].x,
+            data: getInfo[j].y
+          })
+          colors.push(colorsArray[j])
+        }
 
+        var getDescription = yearSeries.data[selectedIndex].des;
+        console.log('des')
+        console.log(getDescription)
+        var getDescriptionValues = getDescription[0];
+        for(var j = 0; j < getDescriptionValues.length; j++){
+          var value = getDescriptionValues[j].toString();
+          console.log(value)
+          var array = value.split(' ');
+          console.log(array)
+          categories.push(array);
+        }
+      }
+      console.log('cat')
+      console.log(categories)
       if (series.length === 0)
         series = [
           {
@@ -577,7 +633,16 @@ export class DetailsComponent implements OnInit {
         colors: colors,
         fill: {
           colors: colors
+        },
+        xaxis: {
+          type: "category",
+          categories: categories
+        },
+        subtitle:{
+          text: degreeName,
+          offsetX: 15
         }
+        
       });
     }
   }
