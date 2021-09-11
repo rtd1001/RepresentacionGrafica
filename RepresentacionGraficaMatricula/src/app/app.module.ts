@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import {MatSelectModule} from '@angular/material/select';
     FormsModule ,
     NgApexchartsModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTooltipModule
   ],
   providers: [XlsDataService],
   bootstrap: [AppComponent]
