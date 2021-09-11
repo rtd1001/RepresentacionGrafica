@@ -40,7 +40,10 @@
     </div>
 
 
-    <button class="btn btn-primary" [disabled]="! isValid" routerLink="/details"  routerLinkActive="active">Subir archivos</button>
+    <button class="btn btn-primary with-icon" [disabled]="! isValid" routerLink="/details"  routerLinkActive="active">
+      <mat-icon style="margin-right: 5px;">cloud_upload</mat-icon>
+      Subir archivos
+    </button>
     <router-outlet></router-outlet>
 
   </div>
