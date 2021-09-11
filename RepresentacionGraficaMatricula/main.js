@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require("electron");
+const { updateBundle } = require("typescript");
 
 let appWin;
 
@@ -10,7 +11,8 @@ createWindow = () => {
         resizable: true,
         webPreferences: {
             nodeIntegration: true
-        }
+        },
+        icon: __dirname + '/ubu.ico'
     });
     
     appWin.loadURL(`file://${__dirname}/dist/index.html`);
