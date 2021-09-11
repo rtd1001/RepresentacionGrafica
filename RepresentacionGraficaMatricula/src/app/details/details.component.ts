@@ -2,7 +2,6 @@ import { Component, OnInit, ResolvedReflectiveFactory, ViewChild } from '@angula
 import { Router } from '@angular/router';
 import { XlsDataService } from '../services/xls-data.service';
 import { Series } from '../series';
-import { AngularMaterialModule } from 'src/angular-material.module';
 
 import {
   ApexChart,

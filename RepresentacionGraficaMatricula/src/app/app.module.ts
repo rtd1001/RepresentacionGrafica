@@ -11,7 +11,8 @@ import { MatIconModule } from "@angular/material/icon";
 import { XlsDataService } from './services/xls-data.service';
 import { FormsModule } from '@angular/forms';
 import { NgApexchartsModule } from 'ng-apexcharts';
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,9 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     BrowserAnimationsModule,
     MatIconModule,
     FormsModule ,
-    NgApexchartsModule
+    NgApexchartsModule,
+    MatFormFieldModule,
+    MatSelectModule
   ],
   providers: [XlsDataService],
   bootstrap: [AppComponent]

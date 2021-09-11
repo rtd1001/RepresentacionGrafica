@@ -35,15 +35,23 @@
             </thead>
             <tbody>
                 <tr *ngFor="let dynamic of dynamicSeries;let i = index;">
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>Seleccione un documento</mat-label>
+                        <mat-select #selectDoc="ngModel" ngModel="dynamicSeries[i].docs" (change)="changeDoc(selectDoc.value,i)" id="selectDoc">
+                          <mat-option *ngFor="let x of docsList" value="x">{{ x }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <!--
                     <td>
-                        <select #selectDoc="ngModel" ngModel="dynamicSeries[i].docs" (change)="changeDoc(selectDoc.value,i)" id="selectDoc" class="form-select">
-                            <option value="">Seleccione un documento</option>
+                        <select #selectDoc="ngModel" ngModel="dynamicSeries[i].docs" (change)="changeDoc(selectDoc.value,i)" id="selectDoc" class="form-select" >
+                            <option >Seleccione un documento</option>
                             <option *ngFor="let x of docsList" [ngValue]="x">{{ x }}</option>
                         </select>
-                        </td>
+                    </td>-->
                     <td>
                     <select #selectDegre="ngModel" ngModel="dynamicSeries[i].degrees" (change)="changeDegree(selectDegre.value,i)" id="selectDegre" class="form-select">
-                        <option value="">Seleccione un grado</option>
+                        <option hidden selected>Seleccione un grado</option>
                         <option *ngFor="let d of degreesList[i]" [ngValue]="d">{{ d }}</option>
                     </select>
                     </td>
