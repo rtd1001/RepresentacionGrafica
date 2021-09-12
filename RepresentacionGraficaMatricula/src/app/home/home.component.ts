@@ -12,12 +12,13 @@ export class HomeComponent implements OnInit {
 
   fileList = [];
   actualFile : File;
-  //worksheet: any[];
-  //xlsData: any[] = [];
+
   xlsData = {};
   isValid = false;
   fileNameDiv:any;
   alert = false;
+
+  listOfFiles: Array<any> = [];
 
   constructor(private router: Router, private _xlsData: XlsDataService) {
    
@@ -33,7 +34,7 @@ export class HomeComponent implements OnInit {
     this.isValid = false;
     var files =  event.target.files;
     this.actualFile =files[0];
-    console.log(this.actualFile)
+    //console.log(this.actualFile)
     /*
     this.fileList = event.target.files;
     
@@ -108,7 +109,7 @@ export class HomeComponent implements OnInit {
     var worksheet;
     //var xlsData = [];
     var reader = new FileReader();
-    console.log(reader)
+    //console.log(reader)
 
     reader.onload = (event) => {
       var data = event.target.result;
@@ -123,15 +124,16 @@ export class HomeComponent implements OnInit {
       var xlsDataAux;
       xlsDataAux = this.readWorksheet(worksheet);
 
-      this.fileNameDiv.innerHTML += this.actualFile.name + "<br/>" + "<hr/>";
+      this.addFileRow(this.actualFile.name);
+      //this.fileNameDiv.innerHTML += this.actualFile.name + "<br/>" + "<hr/>";
       this.isValid = true;
       document.getElementById('spinner').style.display = 'none';
       
       //Almaceno los archivos parseados
       this.xlsData[currentFile.name] = xlsDataAux;
       //this.xlsData.push(xlsDataAux);
-      this._xlsData.setXlsData(this.xlsData);
-      console.log(this.xlsData)
+      //this._xlsData.setXlsData(this.xlsData);
+      //console.log(this.xlsData)
       /*if( worksheet[XLSX.utils.encode_cell({c:0, r:0})] === undefined ){
         alert('Ha introducido un archivo vacío. Vuelva a introducir otro archivo.');
         fileBtn.value = ''; 
@@ -139,6 +141,22 @@ export class HomeComponent implements OnInit {
     };
     
     return reader;
+  }
+
+  addFileRow(name){
+    this.listOfFiles.push(name);
+  }
+
+  deleteFileRow(i){
+    
+    var file = this.listOfFiles[i];
+    delete this.xlsData[file];
+    console.log(this.xlsData)
+    this.listOfFiles.splice(i, 1);
+  }
+
+  sendData(){
+    this._xlsData.setXlsData(this.xlsData);
   }
 
   //Función para parsear el archivo
