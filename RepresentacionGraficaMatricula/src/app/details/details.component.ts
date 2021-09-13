@@ -156,20 +156,22 @@ export class DetailsComponent implements OnInit {
     this.resertChart();
     this.selectedDoc = value;
     this.dynamicSeries[i].docs = this.selectedDoc;
-    
+
     this.resetDegree(i);
     this.resetYear(i);
     this.resetSemester(i);
 
+    console.log(this.xlsData)
+    console.log(this.selectedDoc)
     var info = this.xlsData[this.selectedDoc];
-    var xlsDataKey = Object.keys(info);
+    console.log(info)
 
+    var xlsDataKey = Object.keys(info);
     var degreData = Object.values(xlsDataKey);
     var listAux = [];
     for(var j = 0; j < degreData.length; j++){
       listAux.push(degreData[j]);
     }
-
     this.degreesList[i] = listAux;
     /*
     for(var j = 0; j < xlsDataVal.length; j++){
