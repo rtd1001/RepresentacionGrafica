@@ -24,7 +24,7 @@
 
     <div style="margin-top: 40px" (click)="addRow()">
     
-        <button mat-button class="btn btn-primary with-icon bt-icon-right">
+        <button mat-button class="btn btn-primary with-icon bt-icon-right btn-sm">
             <mat-icon>add</mat-icon> 
             Añadir serie
         </button>
@@ -81,7 +81,7 @@
                     
                     <td>
                         <select #selectDoc="ngModel" ngModel="dynamicSeries[i].docs" (change)="changeDoc(selectDoc.value,i)" id="selectDoc" class="form-select" >
-                            <option >Seleccione un documento</option>
+                            <option hidden selected>Seleccione un documento</option>
                             <option *ngFor="let x of docsList" [ngValue]="x">{{ x }}</option>
                         </select>
                     </td>
@@ -109,7 +109,7 @@
         </table>
   </div>
 
-  <button style="margin-top: 10px" (click)="createChart()" class="btn btn-primary btn-lg with-icon">
+  <button style="margin-top: 10px" (click)="createChart()" class="btn btn-primary with-icon">
     <mat-icon style="margin-right: 5px;"> show_chart</mat-icon>
     Crear gráfico
   </button>
