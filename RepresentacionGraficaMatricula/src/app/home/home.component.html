@@ -21,37 +21,20 @@
       
     </div>
 
-    <!-- <div class="accordion" id="accordionExample">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="headingOne">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
-             matTooltip="Los archivos van a ser usados para obtener datos y realizar gráficas." matTooltipPosition="above">
-            Listado de archivos
-          </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-          <div class="accordion-body">
-            
-            <div id="fileName"></div>
-            
-          </div>
-        </div>
-      </div>
-    </div> -->
-
     <table class="table table-hover">
       <thead>
         <tr>
           <th class="table-primary" matTooltip="Los archivos van a ser usados para obtener datos y realizar gráficas." matTooltipPosition="above">Listado de archivos</th>
+          <th class="table-primary"></th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let file of listOfFiles;let i = index">
-          <td style="align-items: center;display: flex; height: 56px;">
+          <!-- <td style="align-items: center;display: flex; height: 56px;">
 
             {{listOfFiles[i]}} 
 
-          </td> 
+          </td>  -->
           <!-- <td style="align-items: center;display: flex; height: 56px;">
             <div style="display:inline-block">
               <div style="float: left;margin-left: 20px;">
@@ -64,7 +47,15 @@
               </div>
                
             </div>
-          </td> -->
+          </td>  -->
+            <td style="vertical-align: middle;padding-top: 17px;">
+                 <p> {{listOfFiles[i]}} </p>
+            </td> 
+            <td>
+                <button class="btn btn-primary with-icon" (click)="deleteFileRow(i)" >
+                  <mat-icon>delete</mat-icon>
+                </button>
+            </td>
         </tr>
       </tbody>
     </table>
