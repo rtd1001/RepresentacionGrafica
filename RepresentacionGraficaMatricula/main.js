@@ -7,7 +7,7 @@ createWindow = () => {
     appWin = new BrowserWindow({
         width: 800,
         height: 600,
-        title: "Representación gráfica de matrículaa",
+        title: "Representación gráfica de matrícula",
         resizable: true,
         webPreferences: {
             nodeIntegration: true
@@ -20,7 +20,7 @@ createWindow = () => {
     appWin.setMenu(null);
 
     appWin.webContents.openDevTools();
-
+    appWin.setBackgroundColor('#E5E8E8');
     appWin.on("closed", () => {
         appWin = null;
     });
