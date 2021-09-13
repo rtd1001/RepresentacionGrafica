@@ -11,7 +11,7 @@
 
       {{fileList || "No ha seleccionado ningún fichero."}}
   
-      <button mat-button (click)="fileUpload.click()" class="btn btn-primary with-icon bt-icon-right">
+      <button mat-button (click)="fileUpload.click()" class="btn btn-primary with-icon bt-icon-right btn-sm">
         <mat-icon>add</mat-icon> 
         Añadir archivo
         <div class="spinner-border spinner-border-sm" role="status" id="spinner" style="margin-left: 5px;">
@@ -52,7 +52,7 @@
                  <p> {{listOfFiles[i]}} </p>
             </td> 
             <td>
-                <button class="btn btn-primary with-icon" (click)="deleteFileRow(i)" >
+                <button class="btn btn-secondary with-icon" (click)="deleteFileRow(i)" >
                   <mat-icon>delete</mat-icon>
                 </button>
             </td>
