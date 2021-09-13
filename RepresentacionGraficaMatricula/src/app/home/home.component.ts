@@ -153,6 +153,10 @@ export class HomeComponent implements OnInit {
     delete this.xlsData[file];
     console.log(this.xlsData)
     this.listOfFiles.splice(i, 1);
+
+    if(this.listOfFiles.length === 0){
+      this.isValid = false;
+    }
   }
 
   sendData(){
