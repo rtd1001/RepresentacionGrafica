@@ -441,7 +441,7 @@ export class DetailsComponent implements OnInit {
       },
       yaxis: {
         min: 0,
-        max:500,
+        max:result.maxY,
         tickAmount: 20,
         labels: {
           show: true
@@ -506,13 +506,8 @@ export class DetailsComponent implements OnInit {
       xaxis: {
         labels:{
           rotate: 0,
-          hideOverlappingLabels: false
+          hideOverlappingLabels: true
         }
-      },
-      yaxis: {
-        min: 0,
-        max: 200,
-        tickAmount: 20,
       },
       title: {
         text: "Matriculados en cada asignatura por grupo teórico",
@@ -546,6 +541,7 @@ export class DetailsComponent implements OnInit {
 
     var dataSerie = [];
 
+    var maxAverage = 0;
     for(var i = 0; i < this.dynamicSeries.length; i++){
       var descriptionArray = [];
 
@@ -570,6 +566,7 @@ export class DetailsComponent implements OnInit {
 
       var total  = 0;
       var groupInfo = [];
+      var maxGroup = 0;
       for(var j = 0; j < groups.length; j++){
         
         var info_group = info.filter(row => row.asig_grupo == groups[j])
@@ -579,21 +576,35 @@ export class DetailsComponent implements OnInit {
           
           total += info_group[key].alum_total;
           totalEachGroup.push(info_group[key].alum_total)
+
         });
 
         
+        maxGroup += Math.max.apply(null, totalEachGroup);
+
         groupInfo[j] = {
           x: "Grupo" + groups[j], 
           y: totalEachGroup
         }
 
+
       }
+
+      var average = 0;
+      average = total/description.length;
+
+      if( average > maxAverage){
+        maxAverage = average;
+      }
+
       dataSerie[i] = {
         x: this.dynamicSeries[i].degrees,
-        y: total,
+        y: average,
         color: colors[i],
+        maxY: maxAverage,
         chartInfo: groupInfo,
-        des: descriptionArray
+        des: descriptionArray,
+        maxY_group:maxGroup
       }
      
     }
@@ -611,6 +622,7 @@ export class DetailsComponent implements OnInit {
     '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D','#FF6633', '#FFB399', '#FF33FF', '#FFFF99'];
     var colors = [];
     var degreeName = '';
+    var maxY = 0;
 
     if (sourceChart.w.globals.selectedDataPoints[0]) {
       var selectedPoints = sourceChart.w.globals.selectedDataPoints;
@@ -620,6 +632,8 @@ export class DetailsComponent implements OnInit {
         degreeName = yearSeries.data[selectedIndex].x;
         var getInfo = yearSeries.data[selectedIndex].chartInfo;
         
+        maxY = yearSeries.data[selectedIndex].maxY_group;
+
         for(var j = 0; j < getInfo.length; j++){
           series.push({
             name: getInfo[j].x,
@@ -629,14 +643,12 @@ export class DetailsComponent implements OnInit {
         }
 
         var getDescription = yearSeries.data[selectedIndex].des;
-        console.log('des')
-        console.log(getDescription)
         var getDescriptionValues = getDescription[0];
         for(var j = 0; j < getDescriptionValues.length; j++){
           var value = getDescriptionValues[j].toString();
-          console.log(value)
+          
           var array = value.split(' ');
-          console.log(array)
+          
           categories.push(array);
         }
       }
@@ -662,7 +674,12 @@ export class DetailsComponent implements OnInit {
         subtitle:{
           text: degreeName,
           offsetX: 15
-        }
+        },
+        yaxis: {
+          min: 0,
+          max: maxY,
+          tickAmount: 20,
+        },
         
       });
     }
