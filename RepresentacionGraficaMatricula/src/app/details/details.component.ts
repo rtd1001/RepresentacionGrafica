@@ -16,6 +16,7 @@ import {
   ApexTitleSubtitle,
   ApexResponsive
 } from "ng-apexcharts";
+import { FormControl, FormGroup } from '@angular/forms';
 
 type ApexXAxis = {
   type?: "category" | "datetime" | "numeric";
@@ -70,13 +71,15 @@ export type ChartOptions = {
 
 export class DetailsComponent implements OnInit {
 
+  formularioGrafico:FormGroup;
+
   @ViewChild("chart") chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
   public chartInfoOptions: Partial<ChartOptions>;
 
   xlsData: any[];
 
-  constructor(private router: Router, private _xlsData: XlsDataService) { }
+  constructor(private router: Router, private _xlsData: XlsDataService, private filtroGraficaService: FiltroGraficaService) { }
 
   dynamicSeries: Array<Series> = [];
   dynamicAux: any = {};
@@ -110,6 +113,14 @@ export class DetailsComponent implements OnInit {
     //this.docs = this.getDoc();
     this.docsList = this.getDoc();
     console.log(this.xlsData)
+
+    this.formularioGrafico = new FormGroup({
+      graficoSeleccionado:new FormControl()
+    })
+    this.formularioGrafico.get('graficoSeleccionado').valueChanges.subscribe(nuevoValor=>{
+      this.selectedChart=nuevoValor;
+      console.log(this.selectedChart)
+    })
   }
 
   getDoc(){

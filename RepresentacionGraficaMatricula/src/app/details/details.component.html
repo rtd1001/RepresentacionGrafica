@@ -8,12 +8,22 @@
     </button>
     <router-outlet></router-outlet>
 
+    <form [formGroup]="formularioGrafico"> 
+        <mat-form-field appearance="fill">
+         <mat-label>Seleccione una gráfica</mat-label>
+        <mat-select formControlName="graficoSeleccionado">
+          <mat-option value="1">Matriculados en grupos teóricos</mat-option>
+          <mat-option value="2">Grafico 2</mat-option>
+        </mat-select>
+    </mat-form-field> 
+    </form>
+
     <br>
-    <select id="chart-combo" (change)="onChartSelected($event)" class="form-select">
+    <!--select id="chart-combo" (change)="onChartSelected($event)" class="form-select">
         <option hidden selected>Seleccione una gráfica</option>
         <option>Matriculados en grupos teóricos</option>
         <option>Grafico 2</option>
-    </select>
+    </select>-->
     <!--<mat-form-field appearance="fill">
          <mat-label>Seleccione una gráfica</mat-label>
         <mat-select id="chart-combo" (change)="onChartSelected($event)">
@@ -168,5 +178,12 @@
     </div>
 </div>
 
+
+<!-- Muestra de graficos -->
+<ng-container *ngSwitch="selectedChart">
+    <app-graf-vertical *ngSwitchCase="'1'" [datos]="[1,2,3,4]">
+
+    </app-graf-vertical>
+</ng-container>
   
   
