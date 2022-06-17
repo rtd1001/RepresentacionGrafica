@@ -1,15 +1,13 @@
-<p>graf-vertical works!</p>
+<div>
+    <ngx-charts-bar-vertical (select)="onSelect($event)" [view]="[1000,400]" [results]="datosGrafico"
+        [legendTitle]="'Leyenda'" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true"
+        [yAxis]="true" [gradient]="true">
+    </ngx-charts-bar-vertical>
+</div>
 
-<ngx-charts-bar-vertical 
-    [view]="[1000,400]"
-    [results]="saleData"
-    [xAxisLabel]="'Products'"
-    [legendTitle]="'Product Sale Chart'"
-    [yAxisLabel]="'Sale'"
-    [legend]="true"
-    [showXAxisLabel]="true"
-    [showYAxisLabel]="true"
-    [xAxis]="true"
-    [yAxis]="true"
-    [gradient]="true">
-</ngx-charts-bar-vertical>
+<div>
+    <ngx-charts-bar-vertical *ngIf="graficoInfoAdicional" [view]="[1000,400]" [results]="graficoInfoAdicional"
+        [legendTitle]="'Leyenda'" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true"
+        [yAxis]="true" [gradient]="true">
+    </ngx-charts-bar-vertical>
+</div>

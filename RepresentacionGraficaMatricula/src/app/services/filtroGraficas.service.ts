@@ -6,5 +6,9 @@ import { Injectable } from '@angular/core';
 export class FiltroGraficasService {
   xlsData:any;
 
+  constructor(){
+    
+  }
+
 
 }

@@ -3,42 +3,30 @@
 
 <div class="container">
 
-    <button mat-button routerLink="/home-component" routerLinkActive="active" class="btn btn-primary btn-circle btn-lg">
-        <mat-icon>arrow_back</mat-icon> 
+    <button mat-button [routerLink]="['home-component']" class="btn btn-primary btn-circle btn-lg">
+        <mat-icon>arrow_back</mat-icon>
     </button>
     <router-outlet></router-outlet>
 
-    <form [formGroup]="formularioGrafico"> 
+    <form [formGroup]="formularioGrafico">
         <mat-form-field appearance="fill">
-         <mat-label>Seleccione una gráfica</mat-label>
-        <mat-select formControlName="graficoSeleccionado">
-          <mat-option value="1">Matriculados en grupos teóricos</mat-option>
-          <mat-option value="2">Grafico 2</mat-option>
-        </mat-select>
-    </mat-form-field> 
+            <mat-label>Seleccione una gráfica</mat-label>
+            <mat-select formControlName="graficoSeleccionado">
+                <mat-option value=1>Matriculados en grupos teóricos</mat-option>
+                <mat-option value=2>Grafico 2</mat-option>
+            </mat-select>
+        </mat-form-field>
     </form>
 
-    <br>
-    <!--select id="chart-combo" (change)="onChartSelected($event)" class="form-select">
-        <option hidden selected>Seleccione una gráfica</option>
-        <option>Matriculados en grupos teóricos</option>
-        <option>Grafico 2</option>
-    </select>-->
-    <!--<mat-form-field appearance="fill">
-         <mat-label>Seleccione una gráfica</mat-label>
-        <mat-select id="chart-combo" (change)="onChartSelected($event)">
-          <mat-option>Matriculados en grupos teóricos</mat-option>
-          <mat-option>Grafico 2</mat-option>
-        </mat-select>
-    </mat-form-field> -->
 
-    <div style="margin-top: 40px" (click)="addRow()">
-    
-        <button mat-button class="btn btn-primary with-icon bt-icon-right btn-sm">
-            <mat-icon>add</mat-icon> 
+
+    <div style="margin-top: 40px">
+
+        <button (click)="addRow()" mat-button class="btn btn-primary with-icon bt-icon-right btn-sm">
+            <mat-icon>add</mat-icon>
             Añadir serie
         </button>
-      
+
     </div>
 
     <div style="margin-top: 10px">
@@ -86,104 +74,55 @@
                             </mat-select>
                         </mat-form-field>
                     </td> -->
-                    
-                    
-                    
+
                     <td>
-                        <select #selectDoc="ngModel" ngModel="dynamicSeries[i].docs" (change)="changeDoc(selectDoc.value,i)" id="selectDoc" class="form-select" >
+                        <select #selectDoc="ngModel" ngModel="dynamicSeries[i].docs"
+                            (change)="changeDoc(selectDoc.value,i)" id="selectDoc" class="form-select">
                             <option hidden selected>Seleccione un documento</option>
                             <option *ngFor="let x of docsList" [ngValue]="x">{{ x }}</option>
                         </select>
                     </td>
                     <td>
-                    <select #selectDegre="ngModel" ngModel="dynamicSeries[i].degrees" (change)="changeDegree(selectDegre.value,i)" id="selectDegre" class="form-select">
-                        <option hidden selected>Seleccione un grado</option>
-                        <option *ngFor="let d of degreesList[i]" [ngValue]="d">{{ d }}</option>
-                    </select>
+                        <select #selectDegre="ngModel" ngModel="dynamicSeries[i].degrees"
+                            (change)="changeDegree(selectDegre.value,i)" id="selectDegre" class="form-select">
+                            <option hidden selected>Seleccione un grado</option>
+                            <option *ngFor="let d of degreesList[i]" [ngValue]="d">{{ d }}</option>
+                        </select>
                     </td>
                     <td>
-                    <select #selectYear="ngModel" [(ngModel)]="dynamicSeries[i].years" (change)="changeYear(selectYear.value,i)" id="selectYear" class="form-select">
-                        <option hidden selected>Seleccione un curso</option>
-                        <option *ngFor="let y of yearsList[i]" [ngValue]="y">{{ y }}</option>
-                    </select>
+                        <select #selectYear="ngModel" [(ngModel)]="dynamicSeries[i].years"
+                            (change)="changeYear(selectYear.value,i)" id="selectYear" class="form-select">
+                            <option hidden selected>Seleccione un curso</option>
+                            <option *ngFor="let y of yearsList[i]" [ngValue]="y">{{ y }}</option>
+                        </select>
                     </td>
                     <td>
-                    <select #selectSemester="ngModel" [(ngModel)]="dynamicSeries[i].semesters" (change)="changeSemester(selectSemester.value,i)" id="selectSemester" class="form-select">
-                        <option hidden selected>Seleccione un semestre</option>
-                        <option *ngFor="let s of semestersList[i]" [ngValue]="s">{{ s }}</option>
-                    </select>
+                        <select #selectSemester="ngModel" [(ngModel)]="dynamicSeries[i].semesters"
+                            (change)="changeSemester(selectSemester.value,i)" id="selectSemester" class="form-select">
+                            <option hidden selected>Seleccione un semestre</option>
+                            <option *ngFor="let s of semestersList[i]" [ngValue]="s">{{ s }}</option>
+                        </select>
                     </td>
                 </tr>
-                
+
             </tbody>
         </table>
-  </div>
-
-  <button style="margin-top: 10px" (click)="createChart()" class="btn btn-primary with-icon">
-    <mat-icon style="margin-right: 5px;"> show_chart</mat-icon>
-    Crear gráfico
-  </button>
-  <!--<div id="chart-container">
-    <canvas id="chart-1" width="800" height="450"></canvas>
-  </div>
-    
-    <div id="bar-chart">
-        <apx-chart
-            [series]="chartOptions.series"
-            [chart]="chartOptions.chart"
-            [dataLabels]="chartOptions.dataLabels"
-            [plotOptions]="chartOptions.plotOptions"
-            [responsive]="chartOptions.responsive"
-            [xaxis]="chartOptions.xaxis"
-            [legend]="chartOptions.legend"
-            [fill]="chartOptions.fill"
-        ></apx-chart>
     </div>
-    
-    -->
-    <div >
-        <div id="bar-chart" *ngIf="loaded">
-            <apx-chart
-            [series]="chartOptions.series"
-            [chart]="chartOptions.chart"
-            [responsive]="chartOptions.responsive"
-            [dataLabels]="chartOptions.dataLabels"
-            [plotOptions]="chartOptions.plotOptions"
-            [yaxis]="chartOptions.yaxis"
-            [xaxis]="chartOptions.xaxis"
-            [subtitle]="chartOptions.subtitle"
-            [colors]="chartOptions.colors"
-            [states]="chartOptions.states"
-            [title]="chartOptions.title"
-            [tooltip]="chartOptions.tooltip"
-            ></apx-chart>
-        </div>
-        
 
-        <div id="chart-info" *ngIf="loaded">
-            <apx-chart
-            [series]="chartInfoOptions.series"
-            [chart]="chartInfoOptions.chart"
-            [responsive]="chartInfoOptions.responsive"
-            [legend]="chartInfoOptions.legend"
-            [plotOptions]="chartInfoOptions.plotOptions"
-            [yaxis]="chartInfoOptions.yaxis"
-            [xaxis]="chartInfoOptions.xaxis"
-            [grid]="chartInfoOptions.grid"
-            [title]="chartInfoOptions.title"
-            ></apx-chart>
-        </div>
+    <button style="margin-top: 10px" (click)="createChart()" class="btn btn-primary with-icon">
+        <mat-icon style="margin-right: 5px;"> show_chart</mat-icon>
+        Crear gráfico
+    </button>
 
-        
-    </div>
+
 </div>
 
 
 <!-- Muestra de graficos -->
-<ng-container *ngSwitch="selectedChart">
-    <app-graf-vertical *ngSwitchCase="'1'" [datos]="[1,2,3,4]">
 
-    </app-graf-vertical>
-</ng-container>
-  
-  
+
+<div *ngIf="informacionGraficosAMostrar">
+    <div *ngIf="tipoGrafico === 'vertical'">
+        <app-graf-vertical [datos]="informacionGraficosAMostrar"></app-graf-vertical>
+    </div>
+</div>

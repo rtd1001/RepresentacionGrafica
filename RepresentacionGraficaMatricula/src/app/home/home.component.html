@@ -1,74 +1,60 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
-<script lang="javascript" src="dist/xlsx.full.min.js"></script>
+<div class="container">
+    <div class="child">
+        <form [formGroup]="formularioExcel">
+            <input type="file" class="file-input" id="fileInput" formControlName="excel"
+                (change)="onFileSelected($event)" accept=".xls" #fileUpload>
+        </form>
 
-<div class="container"> 
 
-  <div class="child">
+        <div class="file-upload" style="margin-bottom: 20px">
 
-    <input type="file" class="file-input" id="fileInput" (change)="onFileSelected($event)"  accept=".xls" #fileUpload>
+            {{listadoFicheros || "No ha seleccionado ningún fichero."}}
 
-    <div class="file-upload" style="margin-bottom: 20px">
+            <button mat-button (click)="fileUpload.click()" class="btn btn-primary with-icon bt-icon-right btn-sm">
+                <mat-icon>add</mat-icon>
+                Añadir archivo
+                <div *ngIf="cargando" class="spinner-border spinner-border-sm" role="status" id="spinner"
+                    style="margin-left: 5px;">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </button>
 
-      {{fileList || "No ha seleccionado ningún fichero."}}
-  
-      <button mat-button (click)="fileUpload.click()" class="btn btn-primary with-icon bt-icon-right btn-sm">
-        <mat-icon>add</mat-icon> 
-        Añadir archivo
-        <div class="spinner-border spinner-border-sm" role="status" id="spinner" style="margin-left: 5px;">
-          <span class="sr-only">Loading...</span>
         </div>
-      </button>
-      
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="table-primary"
+                        matTooltip="Los archivos van a ser usados para obtener datos y realizar gráficas."
+                        matTooltipPosition="above">Listado de archivos</th>
+                    <th class="table-primary"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--Bucle angular-->
+                <tr *ngFor="let file of listadoFicheros;let i = index">
+
+                    <td style="vertical-align: middle;padding-top: 17px;">
+                        <p> {{file.name}} </p>
+                    </td>
+                    <td style="width: 50px;">
+                        <button class="btn with-icon" (click)="borraFichero(file)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn btn-primary with-icon" [disabled]="listadoFicheros.length === 0" (click)="sendData()">
+            <mat-icon style="margin-right:5px">cloud_upload</mat-icon>
+            Subir archivos
+        </button>
+        <router-outlet></router-outlet>
+
     </div>
 
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th class="table-primary" matTooltip="Los archivos van a ser usados para obtener datos y realizar gráficas." matTooltipPosition="above">Listado de archivos</th>
-          <th class="table-primary"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let file of listOfFiles;let i = index">
-          <!-- <td style="align-items: center;display: flex; height: 56px;">
 
-            {{listOfFiles[i]}} 
 
-          </td>  -->
-          <!-- <td style="align-items: center;display: flex; height: 56px;">
-            <div style="display:inline-block">
-              <div style="float: left;margin-left: 20px;">
-                <button class="btn btn-primary with-icon" (click)="deleteFileRow(i)" >
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-              <div>
-                {{listOfFiles[i]}} 
-              </div>
-               
-            </div>
-          </td>  -->
-            <td style="vertical-align: middle;padding-top: 17px;">
-                 <p> {{listOfFiles[i]}} </p>
-            </td> 
-            <td style="width: 50px;">
-                <button class="btn with-icon" (click)="deleteFileRow(i)" >
-                  <mat-icon>delete</mat-icon>
-                </button>
-            </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <button class="btn btn-primary with-icon" [disabled]="! isValid" routerLink="/details"  routerLinkActive="active" (click)="sendData()">
-      <mat-icon style="margin-right:5px">cloud_upload</mat-icon>
-      Subir archivos
-    </button>
-    <router-outlet></router-outlet>
-
-  </div>
-  
-  
-  
 
 </div>

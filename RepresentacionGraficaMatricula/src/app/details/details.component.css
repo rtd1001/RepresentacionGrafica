@@ -91,3 +91,9 @@ table tr:last-child {
     transform: translateX(-50%);
   }
 }
+
+
+
+
+
+mat-form-field{width: 100%;}

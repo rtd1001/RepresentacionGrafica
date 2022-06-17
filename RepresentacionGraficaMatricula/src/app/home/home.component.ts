@@ -2,296 +2,215 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { XlsDataService } from '../services/xls-data.service';
 import * as XLSX from 'xlsx';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
 
-  fileList = [];
-  actualFile : File;
+    actualFile: File;
 
-  xlsData = {};
-  isValid = false;
-  fileNameDiv:any;
-  alert = false;
+    /*** Información final excel */
+    xlsData = {};
+    fileNameDiv: any;
 
-  listOfFiles: Array<any> = [];
+    listadoFicheros: Array<File> = [];
 
-  constructor(private router: Router, private _xlsData: XlsDataService) {
-   
-  }
+    formularioExcel: FormGroup;
 
-  ngOnInit(): void {
-		this.fileNameDiv = document.querySelector("#fileName");
-    document.getElementById('spinner').style.display = 'none';
-  }
+    /** Atributo para controlar el mostrar el spinner cargando o no */
+    cargando: boolean = false;
 
-  onFileSelected(event) {
-    document.getElementById('spinner').style.display = 'block';
-    this.isValid = false;
-    var files =  event.target.files;
-    this.actualFile =files[0];
-    //console.log(this.actualFile)
-    /*
-    this.fileList = event.target.files;
-    
-    for(var i = 0; i < this.fileList.length; i++){
-      var currentFile = this.fileList[i];
-      //this.fileName.push(fileList[i]);
-      this.validateFileExtension(currentFile);
-    }*/
-    this.validateFileExtension();
+    constructor(private router: Router, private _xlsData: XlsDataService) {
 
-    //this.fileNameDiv.innerHTML = "";
-    
-    if(!this.alert){
-      this.sendFile();
+
     }
-    
-  }
 
-  //Función para compprobar que la extensión del archivo/s sea la correcta
-  validateFileExtension(){
-    var fileName = this.actualFile.name;
-    console.log(fileName)
-
-    var ext = fileName.split('.').pop();
-    ext = ext.toLowerCase();
-
-    if(ext != 'xls'){
-      this.alert = true;
-
-      document.getElementById('spinner').style.display = 'none';
-      alert('El archivo ' + fileName +  ' no tiene la extensión adecuada. Vuelva a introducir otro archivo.');
-      //fileBtn.value = ''; 
-      var fileInput = document.getElementById("fileInput");
-      fileInput.nodeValue='';
+    ngOnInit(): void {
+        this.formularioExcel = new FormGroup({
+            excel: new FormControl()
+        });
+        this.fileNameDiv = document.querySelector("#fileName");
     }
-  }
 
-  sendFile(){
-    /*
-    var fileListRead = [];
-    console.log(this.fileList)
-    if(this.fileList != null){
-      for(var i = 0; i < this.fileList.length; i++){
+    onFileSelected(event) {
+        //Subimos un fichero, mostramos spinner
+        this.cargando = true;
+        const file = event.target.files[0];
+        //Comprobamos la validación y lo sumamos
+        if (!this.validateFileExtension(file)) {
+            this.leeYSumaFichero(file);
+        }
 
-        var currentFile =this.fileList[i];
-        console.log(currentFile);
-        var readerAux;
-        readerAux = this.readFile(currentFile);
-        
-        readerAux.readAsBinaryString(this.fileList[i]);
-        
-        fileListRead.push(readerAux);
-        
-      }
     }
-    */
 
-    if(this.actualFile != null){
-      
-      var readerAux;
-      readerAux = this.readFile(this.actualFile);
-      
-      readerAux.readAsBinaryString(this.actualFile);
-      
-      this.fileList.push(readerAux);
-        
-    }    
-  }
+    /**
+     * Función que comprueba que la extensión del fichero subido sea excel. 
+     * @returns True si es erroneo
+     */
+    validateFileExtension(file: File): boolean {
+        const fileName: string = file.name;
 
-   //Función para leer y parsear cada uno de los archivos
-  readFile(currentFile){
-    var worksheet;
-    //var xlsData = [];
-    var reader = new FileReader();
-    //console.log(reader)
+        let ext: string = fileName.split('.').pop();
+        ext = ext.toLowerCase();
 
-    reader.onload = (event) => {
-      var data = event.target.result;
-      
-      var workbook = XLSX.read(data, {
-        type: "string"
-      });
-      //console.log(workbook)
-      var sheet_name_list = workbook.SheetNames;
-      worksheet = workbook.Sheets[sheet_name_list[0]];
-      
-      var xlsDataAux;
-      xlsDataAux = this.readWorksheet(worksheet);
-
-      this.addFileRow(this.actualFile.name);
-      //this.fileNameDiv.innerHTML += this.actualFile.name + "<br/>" + "<hr/>";
-      this.isValid = true;
-      document.getElementById('spinner').style.display = 'none';
-      
-      //Almaceno los archivos parseados
-      this.xlsData[currentFile.name] = xlsDataAux;
-      //this.xlsData.push(xlsDataAux);
-      //this._xlsData.setXlsData(this.xlsData);
-      //console.log(this.xlsData)
-      /*if( worksheet[XLSX.utils.encode_cell({c:0, r:0})] === undefined ){
-        alert('Ha introducido un archivo vacío. Vuelva a introducir otro archivo.');
-        fileBtn.value = ''; 
-      }*/
-    };
-    
-    return reader;
-  }
-
-  addFileRow(name){
-    this.listOfFiles.push(name);
-  }
-
-  deleteFileRow(i){
-    
-    var file = this.listOfFiles[i];
-    delete this.xlsData[file];
-    console.log(this.xlsData)
-    this.listOfFiles.splice(i, 1);
-
-    if(this.listOfFiles.length === 0){
-      this.isValid = false;
+        if (ext != 'xls') {
+            this.cargando = false;
+            this.formularioExcel.reset();
+            alert('El archivo ' + fileName + ' no tiene la extensión adecuada. Vuelva a introducir otro archivo.');
+            return true;
+        } else {
+            return false;
+        }
     }
-  }
 
-  sendData(){
-    this._xlsData.setXlsData(this.xlsData);
-  }
+    /** Lógica para sumar el fichero a nuestro array de ficheros */
+    leeYSumaFichero(file: File) {
+        const readerAux = this.readFile(file);
+        readerAux.readAsBinaryString(file);
+        this.listadoFicheros.push(file);
+    }
 
-  //Función para parsear el archivo
-  readWorksheet(worksheet){
-          
-    var degrees = {};
+    //Función para leer y parsear cada uno de los archivos
+    readFile(currentFile: File) {
+        let worksheet;
+        const reader = new FileReader();
 
-    //Empiezo en la línea 2 para saltar el encabezado de la hoja de cálculo.
-    var C = 0;
-    var R = 2;
-    
-    //Mientras no sea final del archivo, voy obteniendo los datos relativos a cada grado.
-    var eof = false;
-    while(!eof){
-      
-      //Si se corresponde con el nombre del grado, creo la estructura de dicho grado.
-      var degreeName = worksheet[XLSX.utils.encode_cell({c:C, r:R})];
-      if( degreeName.t != 'n' ){
+        reader.onload = (event) => {
+            const data = event.target.result;
 
-        degreeName = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        var degree: {[k: string]: any} = {};
-        degree = {
-          name: degreeName, 
-          data:[]
+            const workbook = XLSX.read(data, {
+                type: "string"
+            });
+            //console.log(workbook)
+            const sheet_name_list = workbook.SheetNames;
+            worksheet = workbook.Sheets[sheet_name_list[0]];
+
+            const xlsDataAux = this.readWorksheet(worksheet);
+            this.cargando = false;
+
+            //Almaceno los archivos parseados
+            this.xlsData[currentFile.name] = xlsDataAux;
         };
 
-        degrees[degree.name]=degree;
-        
-        //Me salto la cabecera que corresponde al grado.
-        R += 4;
-      }
-      
-      //Mientras no sea final del archivo o final de los datos del grado en el que me encuentro, leo los datos.
-      var eodegree = false;
-      while( !eodegree && !eof){
-        //var degreeRow = {};
-        var degreeRow: {[k: string]: any} = {};
-        //Compruebo que la celda no esté vacía y almaceno el dato en la estructura creada para los datos de los grados.
-        if(worksheet[XLSX.utils.encode_cell({c:C, r:R})])   degreeRow.asig_codigo = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_descripcion = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_curso = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_grupo = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_tipAcademica = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_activ = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_tp = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_vp = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.asig_turno = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_maxPropios_rep = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_maxPropios_noRep = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_matriculados_rep = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_matriculados_noRep = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_propios_max = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_propios_exce = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_propios_asig = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_propios_disp = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_externos_max = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_externos_asig = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_externos_disp = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_progInter = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.alum_total = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.critAs_codigo = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.critAs_descripcion = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.critAs_asigAlfb_desde = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.critAs_asigAlfb_hasta = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_pf = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_niu = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_nombreyapellidos = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_cds = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_actas = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_docencia = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        if(worksheet[XLSX.utils.encode_cell({c:++C, r:R})]) degreeRow.prof_responsable = worksheet[XLSX.utils.encode_cell({c:C, r:R})].v;
-        
-        degree.data.push(degreeRow);
-
-        //Reseteo las filas y columnas, aumento la fila y la columna vuelve a 0 para empezar de nuevo.
-        R += 1;
-        C = 0;
-
-        //Verifico las condiciones de los 'while'
-        var nextDegreeRow = worksheet[XLSX.utils.encode_cell({c:C, r:R})];
-        if( !nextDegreeRow ){
-          eof=true;
-        }else if( nextDegreeRow.t === 's' ){
-          eodegree=true;
-        }
-        
-      }
-      //console.log(degrees.name)
-      
+        return reader;
     }
 
-    var degreesOK;
-    degreesOK = this.removeDuplicates(degrees);
-    console.log(degreesOK)
-    return degreesOK;
-  }
-
-
-  /*Función para eliminar filas duplicadas
-    (si es la misma asignatura y mismo grupo está duplicada,
-    pues se trata de una asignatura con profesores distintos)*/
-  removeDuplicates(degrees){
-
-    var dataAux; 
-    var keys = Object.keys(degrees);
-
-    //recorre el objeto con la información de los grados
-    for(var i = 0; i < keys.length; i++){
-      
-      var key = keys[i];
-      dataAux = degrees[key].data;
-      for(var j = 0; j < dataAux.length-1;j++){
-
-        //Si tienen mismo codigo y grupo, las marco(está repetida)
-        if(dataAux[j].asig_codigo === dataAux[j+1].asig_codigo
-          && dataAux[j].asig_grupo === dataAux[j+1].asig_grupo){
-            dataAux[j] = "";
-        }
-
-      }
-
-      //Filtro aquelllas filas que he marcado y las elimino de mi objeto
-      dataAux = dataAux.filter(row => (row + "").trim());
-      degrees[key].data = dataAux;
+    borraFichero(file: File) {
+        delete this.xlsData[file.name];
+        this.listadoFicheros.splice(this.listadoFicheros.indexOf(file), 1);
     }
 
-    return degrees;
-  }
+    sendData() {
+        this._xlsData.setXlsData(this.xlsData);
+        this.router.navigate(['details'])
+    }
+
+    /** Función para parsear un fichero excel */
+    readWorksheet(worksheet) {
+
+        var degrees = {};
+
+        //Empiezo en la línea 2 para saltar el encabezado de la hoja de cálculo.
+        var C = 0;
+        var R = 2;
+
+        //Mientras no sea final del archivo, voy obteniendo los datos relativos a cada grado.
+        var eof = false;
+        while (!eof) {
+
+            //Si se corresponde con el nombre del grado, creo la estructura de dicho grado.
+            var degreeName = worksheet[XLSX.utils.encode_cell({ c: C, r: R })];
+            if (degreeName.t != 'n') {
+
+                degreeName = worksheet[XLSX.utils.encode_cell({ c: C, r: R })].v;
+                var degree: { [k: string]: any } = {};
+                degree = {
+                    name: degreeName,
+                    data: []
+                };
+
+                degrees[degree.name] = degree;
+
+                //Me salto la cabecera que corresponde al grado.
+                R += 4;
+            }
+
+            //Mientras no sea final del archivo o final de los datos del grado en el que me encuentro, leo los datos.
+            let eodegree = false;
+            while (!eodegree && !eof) {
+                //var degreeRow = {};
+                var degreeRow: { [k: string]: any } = {};
+                //Compruebo que la celda no esté vacía y almaceno el dato en la estructura creada para los datos de los grados.
+                const nombresCeldas: string[] = ['asig_codigo', 'asig_descripcion', 'asig_curso', 'asig_grupo', 'asig_tipAcademica', 'asig_activ', 'asig_tp', 'asig_vp', 'asig_turno'
+                    , 'alum_maxPropios_rep', 'alum_maxPropios_noRep', 'alum_matriculados_rep', 'alum_matriculados_noRep', 'alum_propios_max', 'alum_propios_exce', 'alum_propios_asig'
+                    , 'alum_propios_disp', 'alum_externos_max', 'alum_externos_asig', 'alum_externos_disp', 'alum_progInter', 'alum_total', 'critAs_codigo',
+                    'critAs_descripcion', 'critAs_asigAlfb_desde', 'critAs_asigAlfb_hasta', 'prof_pf', 'prof_niu', 'prof_nombreyapellidos', 'prof_cds', 'prof_actas', 'prof_docencia', 'prof_responsable'];
+
+                if (worksheet[XLSX.utils.encode_cell({ c: C, r: R })]) degreeRow.asig_codigo = worksheet[XLSX.utils.encode_cell({ c: C, r: R })].v;
+
+                for (const nombreCelda of nombresCeldas) {
+                    if (worksheet[XLSX.utils.encode_cell({ c: ++C, r: R })]) {
+                        degreeRow[nombreCelda] = worksheet[XLSX.utils.encode_cell({ c: C, r: R })].v;
+                    }
+                }
+
+                degree.data.push(degreeRow);
+
+                //Reseteo las filas y columnas, aumento la fila y la columna vuelve a 0 para empezar de nuevo.
+                R += 1;
+                C = 0;
+
+                //Verifico las condiciones de los 'while'
+                const nextDegreeRow = worksheet[XLSX.utils.encode_cell({ c: C, r: R })];
+                if (!nextDegreeRow) {
+                    eof = true;
+                } else if (nextDegreeRow.t === 's') {
+                    eodegree = true;
+                }
+
+            }
+
+        }
+
+        let degreesOK = this.removeDuplicates(degrees);
+        return degreesOK;
+    }
+
+
+    /*Función para eliminar filas duplicadas
+      (si es la misma asignatura y mismo grupo está duplicada,
+      pues se trata de una asignatura con profesores distintos)*/
+    removeDuplicates(degrees) {
+
+        let dataAux;
+        const keys: string[] = Object.keys(degrees);
+
+        //recorre el objeto con la información de los grados
+        for (let i = 0; i < keys.length; i++) {
+
+            let key = keys[i];
+            dataAux = degrees[key].data;
+            for (let j = 0; j < dataAux.length - 1; j++) {
+
+                //Si tienen mismo codigo y grupo, las marco(está repetida)
+                if (dataAux[j].asig_codigo === dataAux[j + 1].asig_codigo
+                    && dataAux[j].asig_grupo === dataAux[j + 1].asig_grupo) {
+                    dataAux[j] = "";
+                }
+
+            }
+
+            //Filtro aquelllas filas que he marcado y las elimino de mi objeto
+            dataAux = dataAux.filter(row => (row + "").trim());
+            degrees[key].data = dataAux;
+        }
+
+        return degrees;
+    }
 
 
 }
