@@ -145,12 +145,12 @@ export class HomeComponent implements OnInit {
                 //var degreeRow = {};
                 var degreeRow: { [k: string]: any } = {};
                 //Compruebo que la celda no esté vacía y almaceno el dato en la estructura creada para los datos de los grados.
-                const nombresCeldas: string[] = ['asig_codigo', 'asig_descripcion', 'asig_curso', 'asig_grupo', 'asig_tipAcademica', 'asig_activ', 'asig_tp', 'asig_vp', 'asig_turno'
+                const nombresCeldas: string[] = ['asig_descripcion', 'asig_curso', 'asig_grupo', 'asig_tipAcademica', 'asig_activ', 'asig_tp', 'asig_vp', 'asig_turno'
                     , 'alum_maxPropios_rep', 'alum_maxPropios_noRep', 'alum_matriculados_rep', 'alum_matriculados_noRep', 'alum_propios_max', 'alum_propios_exce', 'alum_propios_asig'
                     , 'alum_propios_disp', 'alum_externos_max', 'alum_externos_asig', 'alum_externos_disp', 'alum_progInter', 'alum_total', 'critAs_codigo',
                     'critAs_descripcion', 'critAs_asigAlfb_desde', 'critAs_asigAlfb_hasta', 'prof_pf', 'prof_niu', 'prof_nombreyapellidos', 'prof_cds', 'prof_actas', 'prof_docencia', 'prof_responsable'];
 
-                if (worksheet[XLSX.utils.encode_cell({ c: C, r: R })]) degreeRow.asig_codigo = worksheet[XLSX.utils.encode_cell({ c: C, r: R })].v;
+               if (worksheet[XLSX.utils.encode_cell({ c: C, r: R })]) degreeRow.asig_codigo = worksheet[XLSX.utils.encode_cell({ c: C, r: R })].v;
 
                 for (const nombreCelda of nombresCeldas) {
                     if (worksheet[XLSX.utils.encode_cell({ c: ++C, r: R })]) {

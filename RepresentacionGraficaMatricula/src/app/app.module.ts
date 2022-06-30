@@ -17,13 +17,15 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { GrafVerticalComponent } from './graficos/graf-vertical/graf-vertical.component';
 import { FiltroGraficasService } from './services/filtroGraficas.service';
 import { HayFicheroGuard } from './guard/hayFichero.guard';
+import { Filtro1Component } from './filtros/filtro1/filtro1.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         HomeComponent,
         DetailsComponent,
-        GrafVerticalComponent
+        GrafVerticalComponent,
+        Filtro1Component,
     ],
     imports: [
         BrowserModule,

@@ -13,6 +13,7 @@ export class GrafVerticalComponent implements OnInit {
     @Input() datos: any[];
 
     graficoInfoAdicional: any[];
+    series: any[];
 
     infoSeleccionada;
 
@@ -42,11 +43,22 @@ export class GrafVerticalComponent implements OnInit {
             this.infoSeleccionada = infoSeleccionada;
             this.graficoInfoAdicional = [];
             let posicion = 1;
-            for (const valor of infoSeleccionada.chartInfo[0].y) {
+            console.log(infoSeleccionada.chartInfo[0])
+        /*    for (const valor of infoSeleccionada.chartInfo[0].y) {
                 console.log(valor)
                 this.graficoInfoAdicional.push({ name: infoSeleccionada.chartInfo[0].x + posicion, value: valor })
                 posicion++;
+            }*/
+
+            this.series = [];
+            for(var i = 0; i < this.infoSeleccionada.des.length; i++){
+                for (const valor of infoSeleccionada.chartInfo[0].y) {
+                    this.series.push({ name: infoSeleccionada.chartInfo[0].x, value: valor })
+                }
+
+                this.graficoInfoAdicional.push({name: infoSeleccionada.des[i], value: this.series})
             }
+
             console.log(this.graficoInfoAdicional)
         }
 

@@ -18,6 +18,7 @@ import {
 } from "ng-apexcharts";
 import { FormControl, FormGroup } from '@angular/forms';
 import { FiltroGraficasService } from '../services/filtroGraficas.service';
+import { Filtro1Component } from '../filtros/filtro1/filtro1.component';
 
 type ApexXAxis = {
     type?: "category" | "datetime" | "numeric";
@@ -79,6 +80,8 @@ export class DetailsComponent implements OnInit {
     /** Tipo de gráfico seleccionado */
     tipoGrafico: string;
     informacionGraficosAMostrar: any[];
+
+    @ViewChild(Filtro1Component,{static:false}) filtro1Component:Filtro1Component;
 
     @ViewChild("chart") chart: ChartComponent;
     public chartOptions: Partial<ChartOptions>;
@@ -251,110 +254,22 @@ export class DetailsComponent implements OnInit {
         if (!graficoSeleccionado) {
             alert('No ha seleccionado una gráfica. Seleccione la gráfica que desea.');
         } else {
-            let serieCompleta = true;
-            for (var i = 0; i < this.dynamicSeries.length; i++) {
-                Object.keys(this.dynamicSeries[i]).forEach(key => {
-                    if (this.dynamicSeries[i][key] === "") {
-                        serieCompleta = false;
-
-                    }
-                });
-            }
-
-            if (!serieCompleta) {
-                alert('Las series no están completas. Termine de seleccionar las opciones.');
-            } else {
+            
                 switch (graficoSeleccionado) {
                     case '1':
                         this.tipoGrafico = 'vertical';
                         this.selectedChart = Number(graficoSeleccionado);
-                        this.informacionGraficosAMostrar = this.makeData();
+                        this.informacionGraficosAMostrar = this.filtro1Component.makeData();
                         console.log(this.informacionGraficosAMostrar)
                         break;
                     case '2':
                         break;
                 }
-            }
+            
         }
 
 
 
-    }
-
-
-
-
-
-    makeData(): any {
-
-        var dataSerie = [];
-
-        var maxAverage = 0;
-        for (var i = 0; i < this.dynamicSeries.length; i++) {
-            var descriptionArray = [];
-
-            var data = this.xlsData[this.dynamicSeries[i].docs];
-            var info = data[this.dynamicSeries[i].degrees].data.filter(row => (
-                row.asig_curso == this.dynamicSeries[i].years
-                && row.asig_vp == this.dynamicSeries[i].semesters
-                && row.asig_grupo == 'Teoría'
-                && row.asig_activ == 'S'));
-            var groupsDuplicates = [];
-            var descriptionDuplicates = [];
-            Object.keys(info).forEach(key => {
-                groupsDuplicates.push(info[key].asig_grupo);
-                descriptionDuplicates.push(info[key].asig_descripcion);
-            });
-
-            var groups = Array.from(new Set(groupsDuplicates));
-            var description = Array.from(new Set(descriptionDuplicates));
-            descriptionArray.push(description);
-
-            var total = 0;
-            var groupInfo = [];
-            var maxGroup = 0;
-            for (var j = 0; j < groups.length; j++) {
-
-                var info_group = info.filter(row => row.asig_grupo == groups[j])
-
-                var totalEachGroup = []
-                Object.keys(info_group).forEach(key => {
-
-                    total += info_group[key].alum_total;
-                    totalEachGroup.push(info_group[key].alum_total)
-
-                });
-
-
-                maxGroup += Math.max.apply(null, totalEachGroup);
-
-                groupInfo[j] = {
-                    x: "Grupo" + groups[j],
-                    y: totalEachGroup
-                }
-
-
-            }
-
-            var average = 0;
-            average = total / description.length;
-
-            if (average > maxAverage) {
-                maxAverage = average;
-            }
-
-            dataSerie[i] = {
-                x: this.dynamicSeries[i].degrees + '-' + this.dynamicSeries[i].years + '-' + this.dynamicSeries[i].semesters,
-                y: average,
-                color: colors[i],
-                maxY: maxAverage,
-                chartInfo: groupInfo,
-                des: descriptionArray,
-                maxY_group: maxGroup
-            }
-
-        }
-        return dataSerie;
     }
 
 

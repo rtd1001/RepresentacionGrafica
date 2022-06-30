@@ -1,6 +1,6 @@
-export class Series {
+export interface Series {
     docs:string;
-    degrees:string;
-    years:string;
-    semesters:string;
+    degrees?:string;
+    years?:string;
+    semesters?:string;
 }

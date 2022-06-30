@@ -20,94 +20,9 @@
 
 
 
-    <div style="margin-top: 40px">
+   <app-filtro1 *ngIf="formularioGrafico.value.graficoSeleccionado=='1'" (borraGrafica)="informacionGraficosAMostrar=null">
 
-        <button (click)="addRow()" mat-button class="btn btn-primary with-icon bt-icon-right btn-sm">
-            <mat-icon>add</mat-icon>
-            Añadir serie
-        </button>
-
-    </div>
-
-    <div style="margin-top: 10px">
-        <table class="table-light">
-            <thead>
-                <tr>
-                    <th>Documento</th>
-                    <th>Grado</th>
-                    <th>Curso</th>
-                    <th>Semestre</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let dynamic of dynamicSeries;let i = index;">
-                    <!-- <td>
-                        <mat-form-field appearance="fill">
-                            <mat-label>Seleccione un documento</mat-label>
-                            <mat-select #selectDoc="ngModel" ngModel="dynamicSeries[i].docs" (selectionChange)="changeDoc(selectDoc.value,i)" id="selectDoc">
-                            <mat-option *ngFor="let x of docsList" [value]="x">{{ x }}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </td>
-                    <td>
-                        <mat-form-field appearance="fill">
-                            <mat-label>Seleccione un grado</mat-label>
-                            <mat-select #selectDegre="ngModel" ngModel="dynamicSeries[i].degrees" (selectionChange)="changeDegree(selectDegre.value,i)" id="selectDegre">
-                            <mat-option *ngFor="let d of degreesList[i]"  [value]="d">{{ d }}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </td>
-                    <td>
-                        <mat-form-field appearance="fill">
-                            <mat-label>Seleccione un curso</mat-label>
-                            <mat-select #selectYear="ngModel" [(ngModel)]="dynamicSeries[i].years" (selectionChange)="changeYear(selectYear.value,i)" id="selectYear">
-                            <mat-option *ngFor="let y of yearsList[i]"  [value]="y">{{ y }}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </td>
-                                        
-                    <td>
-                        <mat-form-field appearance="fill">
-                            <mat-label>Seleccione un semestre</mat-label>
-                            <mat-select #selectSemester="ngModel" [(ngModel)]="dynamicSeries[i].semesters" (selectionChange)="changeSemester(selectSemester.value,i)" id="selectSemester">
-                            <mat-option *ngFor="let s of semestersList[i]"  [value]="s">{{ s }}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </td> -->
-
-                    <td>
-                        <select #selectDoc="ngModel" ngModel="dynamicSeries[i].docs"
-                            (change)="changeDoc(selectDoc.value,i)" id="selectDoc" class="form-select">
-                            <option hidden selected>Seleccione un documento</option>
-                            <option *ngFor="let x of docsList" [ngValue]="x">{{ x }}</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select #selectDegre="ngModel" ngModel="dynamicSeries[i].degrees"
-                            (change)="changeDegree(selectDegre.value,i)" id="selectDegre" class="form-select">
-                            <option hidden selected>Seleccione un grado</option>
-                            <option *ngFor="let d of degreesList[i]" [ngValue]="d">{{ d }}</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select #selectYear="ngModel" [(ngModel)]="dynamicSeries[i].years"
-                            (change)="changeYear(selectYear.value,i)" id="selectYear" class="form-select">
-                            <option hidden selected>Seleccione un curso</option>
-                            <option *ngFor="let y of yearsList[i]" [ngValue]="y">{{ y }}</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select #selectSemester="ngModel" [(ngModel)]="dynamicSeries[i].semesters"
-                            (change)="changeSemester(selectSemester.value,i)" id="selectSemester" class="form-select">
-                            <option hidden selected>Seleccione un semestre</option>
-                            <option *ngFor="let s of semestersList[i]" [ngValue]="s">{{ s }}</option>
-                        </select>
-                    </td>
-                </tr>
-
-            </tbody>
-        </table>
-    </div>
+   </app-filtro1>
 
     <button style="margin-top: 10px" (click)="createChart()" class="btn btn-primary with-icon">
         <mat-icon style="margin-right: 5px;"> show_chart</mat-icon>
