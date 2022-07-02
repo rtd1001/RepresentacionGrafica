@@ -24,6 +24,10 @@
 
    </app-filtro1>
 
+   <app-filtro2 *ngIf="formularioGrafico.value.graficoSeleccionado=='2'" (borraGrafica)="informacionGraficosAMostrar=null">
+
+    </app-filtro2>
+
     <button style="margin-top: 10px" (click)="createChart()" class="btn btn-primary with-icon">
         <mat-icon style="margin-right: 5px;"> show_chart</mat-icon>
         Crear gráfico
@@ -40,4 +44,8 @@
     <div *ngIf="tipoGrafico === 'vertical'">
         <app-graf-vertical [datos]="informacionGraficosAMostrar"></app-graf-vertical>
     </div>
+    <div *ngIf="tipoGrafico === 'caja1'">
+        <app-graf-caja1 [datos]="informacionGraficosAMostrar"></app-graf-caja1>
+    </div>
 </div>
+

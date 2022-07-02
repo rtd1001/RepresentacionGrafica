@@ -19,6 +19,7 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { FiltroGraficasService } from '../services/filtroGraficas.service';
 import { Filtro1Component } from '../filtros/filtro1/filtro1.component';
+import { Filtro2Component } from '../filtros/filtro2/filtro2.component';
 
 type ApexXAxis = {
     type?: "category" | "datetime" | "numeric";
@@ -82,6 +83,7 @@ export class DetailsComponent implements OnInit {
     informacionGraficosAMostrar: any[];
 
     @ViewChild(Filtro1Component,{static:false}) filtro1Component:Filtro1Component;
+    @ViewChild(Filtro2Component,{static:false}) filtro2Component:Filtro2Component;
 
     @ViewChild("chart") chart: ChartComponent;
     public chartOptions: Partial<ChartOptions>;
@@ -137,10 +139,7 @@ export class DetailsComponent implements OnInit {
 
     }
 
-    /**
-     * Obtiene el listado de documentos
-     * @returns Listado de documentos según los excel subidos
-     */
+   
     getDocs() {
         const docs = [];
         for (const key of Object.keys(this.xlsData)) {
@@ -148,7 +147,7 @@ export class DetailsComponent implements OnInit {
         }
         return docs;
     }
-
+/*
 
     addRow() {
         this.dynamicAux = { docs: "", degrees: "", years: "", semesters: "" };
@@ -244,7 +243,7 @@ export class DetailsComponent implements OnInit {
     resetSemester(i) {
         this.dynamicSeries[i].semesters = "";
     }
-
+*/
 
 
     /** Una vez que ha elegido un gráfico, podemos crearlo */
@@ -263,6 +262,10 @@ export class DetailsComponent implements OnInit {
                         console.log(this.informacionGraficosAMostrar)
                         break;
                     case '2':
+                        this.tipoGrafico = 'caja1';
+                        this.selectedChart = Number(graficoSeleccionado);
+                        this.informacionGraficosAMostrar = this.filtro2Component.makeData();
+                        console.log(this.informacionGraficosAMostrar)
                         break;
                 }
             

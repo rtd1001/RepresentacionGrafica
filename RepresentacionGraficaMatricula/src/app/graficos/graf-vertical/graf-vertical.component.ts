@@ -22,6 +22,7 @@ export class GrafVerticalComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        console.log('datos 1')
         console.log(this.datos)
         for (const dato of this.datos) {
             this.datosGrafico.push({ name: dato.x, value: dato.y });

@@ -1,7 +1,4 @@
 
-<!--
-
-
 <div style="margin-top: 40px">
 
     <button (click)="addRow()" mat-button class="btn btn-primary with-icon bt-icon-right btn-sm">
@@ -10,7 +7,6 @@
     </button>
 
 </div>
--->
 
 <div style="margin-top: 10px">
     <table class="table-light">
@@ -19,12 +15,10 @@
                 <th>Documento</th>
                 <th>Grado</th>
                 <th>Curso</th>
-                <th>Semestre</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor="let dynamic of dynamicSeries;let i = index;">
-
                 <td>
                     <select #selectDoc="ngModel" ngModel="dynamicSeries[i].docs"
                         (change)="changeDoc(selectDoc.value,i)" id="selectDoc" class="form-select">
@@ -46,15 +40,7 @@
                         <option *ngFor="let y of yearsList[i]" [ngValue]="y">{{ y }}</option>
                     </select>
                 </td>
-                <td>
-                    <select #selectSemester="ngModel" [(ngModel)]="dynamicSeries[i].semesters"
-                        (change)="changeSemester(selectSemester.value,i)" id="selectSemester" class="form-select">
-                        <option hidden selected>Seleccione un semestre</option>
-                        <option *ngFor="let s of semestersList[i]" [ngValue]="s">{{ s }}</option>
-                    </select>
-                </td>
             </tr>
-
         </tbody>
     </table>
 </div>

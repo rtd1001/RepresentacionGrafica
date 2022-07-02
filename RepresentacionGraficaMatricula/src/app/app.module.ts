@@ -18,6 +18,8 @@ import { GrafVerticalComponent } from './graficos/graf-vertical/graf-vertical.co
 import { FiltroGraficasService } from './services/filtroGraficas.service';
 import { HayFicheroGuard } from './guard/hayFichero.guard';
 import { Filtro1Component } from './filtros/filtro1/filtro1.component';
+import { GrafCaja1Component } from './graficos/graf-caja1/graf-caja1.component';
+import { Filtro2Component } from './filtros/filtro2/filtro2.component';
 
 @NgModule({
     declarations: [
@@ -26,6 +28,8 @@ import { Filtro1Component } from './filtros/filtro1/filtro1.component';
         DetailsComponent,
         GrafVerticalComponent,
         Filtro1Component,
+        GrafCaja1Component,
+        Filtro2Component,
     ],
     imports: [
         BrowserModule,
