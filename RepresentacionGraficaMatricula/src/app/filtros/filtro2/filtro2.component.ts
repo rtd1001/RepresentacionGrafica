@@ -218,9 +218,9 @@ makeData(): any {
       for (var i = 0; i < this.dynamicSeries.length; i++) {
         var descriptionArray = [];
 
-        var data = this.xlsData[this.dynamicSeries[0].docs];
-        var info = data[this.dynamicSeries[0].degrees].data.filter(row => (
-            row.asig_curso == this.dynamicSeries[0].years
+        var data = this.xlsData[this.dynamicSeries[i].docs];
+        var info = data[this.dynamicSeries[i].degrees].data.filter(row => (
+            row.asig_curso == this.dynamicSeries[i].years
             && row.asig_tipAcademica == 'Teoría'
             && row.asig_activ == 'S'));
             console.log('info')   

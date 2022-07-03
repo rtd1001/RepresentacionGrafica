@@ -267,6 +267,12 @@ export class DetailsComponent implements OnInit {
                         this.informacionGraficosAMostrar = this.filtro2Component.makeData();
                         console.log(this.informacionGraficosAMostrar)
                         break;
+                    case '3':
+                        this.tipoGrafico = 'caja2';
+                        this.selectedChart = Number(graficoSeleccionado);
+                        this.informacionGraficosAMostrar = this.filtro2Component.makeData();
+                        console.log(this.informacionGraficosAMostrar)
+                        break;
                 }
             
         }

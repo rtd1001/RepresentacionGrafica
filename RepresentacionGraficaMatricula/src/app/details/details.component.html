@@ -12,8 +12,9 @@
         <mat-form-field appearance="fill">
             <mat-label>Seleccione una gráfica</mat-label>
             <mat-select formControlName="graficoSeleccionado">
-                <mat-option value=1>Matriculados en grupos teóricos</mat-option>
-                <mat-option value=2>Grafico 2</mat-option>
+                <mat-option value=1>Gráfica de barras vertical - Matriculados en grupos teóricos de un semestre</mat-option>
+                <mat-option value=2>Gráfica de cajas           - Matriculados en un curso de una titulación </mat-option>
+                <mat-option value=2>Grafico 3</mat-option>
             </mat-select>
         </mat-form-field>
     </form>
@@ -25,6 +26,10 @@
    </app-filtro1>
 
    <app-filtro2 *ngIf="formularioGrafico.value.graficoSeleccionado=='2'" (borraGrafica)="informacionGraficosAMostrar=null">
+
+    </app-filtro2>
+
+    <app-filtro2 *ngIf="formularioGrafico.value.graficoSeleccionado=='3'" (borraGrafica)="informacionGraficosAMostrar=null">
 
     </app-filtro2>
 
@@ -46,6 +51,9 @@
     </div>
     <div *ngIf="tipoGrafico === 'caja1'">
         <app-graf-caja1 [datos]="informacionGraficosAMostrar"></app-graf-caja1>
+    </div>
+    <div *ngIf="tipoGrafico === 'caja2'">
+        <app-graf-caja2 [datos]="informacionGraficosAMostrar"></app-graf-caja2>
     </div>
 </div>
 

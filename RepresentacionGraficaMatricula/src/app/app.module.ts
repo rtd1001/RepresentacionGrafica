@@ -20,6 +20,8 @@ import { HayFicheroGuard } from './guard/hayFichero.guard';
 import { Filtro1Component } from './filtros/filtro1/filtro1.component';
 import { GrafCaja1Component } from './graficos/graf-caja1/graf-caja1.component';
 import { Filtro2Component } from './filtros/filtro2/filtro2.component';
+import { GrafCaja2Component } from './graf-caja2/graf-caja2.component';
+import { Filtro3Component } from './filtros/filtro3/filtro3.component';
 
 @NgModule({
     declarations: [
@@ -30,6 +32,8 @@ import { Filtro2Component } from './filtros/filtro2/filtro2.component';
         Filtro1Component,
         GrafCaja1Component,
         Filtro2Component,
+        GrafCaja2Component,
+        Filtro3Component,
     ],
     imports: [
         BrowserModule,
