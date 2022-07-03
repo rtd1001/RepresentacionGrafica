@@ -1,13 +1,6 @@
-<div>
-    <ngx-charts-bar-vertical-stacked (select)="onSelect($event)" [view]="[1000,400]" [results]="datosGrafico"
+<div class="primerGrafico">
+    <ngx-charts-bar-vertical-stacked  [results]="datosGrafico"
         [legendTitle]="'Leyenda'" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true"
-        [yAxis]="true" [gradient]="true" [yAxisTickFormatting]="yAxisTickFormatting">
+        [yAxis]="true" [gradient]="true" [yAxisTicks]="ticks"  [maxXAxisTickLength]="25" [rotateXAxisTicks]="false">
     </ngx-charts-bar-vertical-stacked>
-</div>
-
-<div>
-    <ngx-charts-bar-vertical *ngIf="graficoInfoAdicional" [view]="[1000,400]" [results]="graficoInfoAdicional"
-        [legendTitle]="'Leyenda'" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true"
-        [yAxis]="true" [gradient]="true">
-    </ngx-charts-bar-vertical>
 </div>

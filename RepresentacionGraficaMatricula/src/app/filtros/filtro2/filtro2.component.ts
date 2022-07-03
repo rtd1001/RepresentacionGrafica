@@ -72,8 +72,7 @@ changeDoc(value, i) {
       listAux.push(degreData[j]);
   }
   this.degreesList[i] = listAux;
-
-
+  
 }
 
 changeDegree(value, i) {

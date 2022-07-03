@@ -9,6 +9,7 @@ export class GrafVerticalComponent implements OnInit {
 
 
     datosGrafico: any[] = [];
+    ticks = [];
 
     @Input() datos: any[];
 
@@ -28,42 +29,33 @@ export class GrafVerticalComponent implements OnInit {
         }*/
         this.datosGrafico = this.datos;
         console.log(this.datosGrafico);
-    }
 
- 
-    /**
-     * Evento de selección
-     * @param event 
-     */
-    onSelect(event) {
-        const infoSeleccionada = this.datos.find(dato => dato.x === event.name);
-        if (this.infoSeleccionada === infoSeleccionada) {
-            this.infoSeleccionada = null;
-            this.graficoInfoAdicional = null;
-        } else {
-            this.infoSeleccionada = infoSeleccionada;
-            this.graficoInfoAdicional = [];
-            let posicion = 1;
-            console.log(infoSeleccionada.chartInfo[0])
-        /*    for (const valor of infoSeleccionada.chartInfo[0].y) {
-                console.log(valor)
-                this.graficoInfoAdicional.push({ name: infoSeleccionada.chartInfo[0].x + posicion, value: valor })
-                posicion++;
-            }*/
-
-            this.series = [];
-            for(var i = 0; i < this.infoSeleccionada.des.length; i++){
-                for (const valor of infoSeleccionada.chartInfo[0].y) {
-                    this.series.push({ name: infoSeleccionada.chartInfo[0].x, value: valor })
-                }
-
-                this.graficoInfoAdicional.push({name: infoSeleccionada.des[i], value: this.series})
+        let maximo = 0;
+        for (let dato of this.datos){
+            let sumSerie = 0;
+            for(let serie of dato.series){
+                sumSerie += serie.value;
+                
             }
-
-            console.log(this.graficoInfoAdicional)
+            if (sumSerie > maximo){
+                maximo = sumSerie;
+            }
         }
 
-
+        let redondeo = 0;
+        redondeo = Math.ceil(maximo/25)*25
+        
+        for (let i = 0; i <= redondeo; i++){
+            if ( i % 25 == 0){
+                this.ticks.push(i);
+            }
+        }
+        if( this.ticks.length == 1){
+            this.ticks.push(25);
+        }
+        console.log(this.ticks)
     }
+
+
 
 }
