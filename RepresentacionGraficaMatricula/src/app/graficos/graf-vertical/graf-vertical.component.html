@@ -1,8 +1,8 @@
 <div>
-    <ngx-charts-bar-vertical (select)="onSelect($event)" [view]="[1000,400]" [results]="datosGrafico"
+    <ngx-charts-bar-vertical-stacked (select)="onSelect($event)" [view]="[1000,400]" [results]="datosGrafico"
         [legendTitle]="'Leyenda'" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true"
-        [yAxis]="true" [gradient]="true">
-    </ngx-charts-bar-vertical>
+        [yAxis]="true" [gradient]="true" [yAxisTickFormatting]="yAxisTickFormatting">
+    </ngx-charts-bar-vertical-stacked>
 </div>
 
 <div>
