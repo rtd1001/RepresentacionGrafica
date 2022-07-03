@@ -135,7 +135,10 @@ export class DetailsComponent implements OnInit {
         this.formularioGrafico = new FormGroup({
             graficoSeleccionado: new FormControl()
         });
-
+        //Al cambiar gráfica, reseteamos el valor
+        this.formularioGrafico.get('graficoSeleccionado').valueChanges.subscribe(
+            () => this.informacionGraficosAMostrar=null
+        );
 
     }
 
