@@ -1,0 +1,14 @@
+div {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.primerGrafico{
+    position: absolute;
+    bottom: 0;
+    min-height: 50vh;
+}
