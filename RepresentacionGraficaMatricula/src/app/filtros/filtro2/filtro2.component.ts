@@ -259,17 +259,23 @@ makeData(): any {
             });
           }
 
-          var groupInfo = []
-          groupInfo.push({
+          var groupInfo;
+          groupInfo = {
             name: this.dynamicSeries[i].docs,
             value: sumaGrupo
-          })
-          groupInfo[z]
-          
-          dataSerie[z] = {
-            name: description[z],
-            series: groupInfo
           }
+          
+          //si existe la serie
+          if (dataSerie[z]?.series){
+            dataSerie[z]?.series.push(groupInfo)
+          }else{
+            dataSerie[z] = {
+              name: description[z],
+              series: [groupInfo]
+            }
+          }
+          
+          
 
           /*    var groupInfo = {}
           groupInfo = {
