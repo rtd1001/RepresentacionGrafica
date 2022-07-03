@@ -29,14 +29,14 @@
                 </td>
                 <td>
                     <select #selectDegre="ngModel" ngModel="dynamicSeries[i].degrees"
-                        (change)="changeDegree(selectDegre.value,i)" id="selectDegre" class="form-select">
+                        (change)="changeDegree(selectDegre,i)" id="selectDegre" class="form-select">
                         <option hidden selected>Seleccione un grado</option>
                         <option *ngFor="let d of degreesList[i]" [ngValue]="d">{{ d }}</option>
                     </select>
                 </td>
                 <td>
                     <select #selectYear="ngModel" [(ngModel)]="dynamicSeries[i].years"
-                        (change)="changeYear(selectYear.value,i)" id="selectYear" class="form-select">
+                        (change)="changeYear(selectYear,i)" id="selectYear" class="form-select">
                         <option hidden selected>Seleccione un curso</option>
                         <option *ngFor="let y of yearsList[i]" [ngValue]="y">{{ y }}</option>
                     </select>
