@@ -14,13 +14,11 @@
             <mat-select formControlName="graficoSeleccionado">
                 <mat-option value=1>Gráfica de barras vertical - Matriculados en grupos teóricos de un semestre</mat-option>
                 <mat-option value=2>Gráfica de cajas           - Matriculados en un curso de una titulación </mat-option>
-                <mat-option value=3>Grafico 3</mat-option>
+                <mat-option value=3>Gráfica de cajas           - Matriculados en los semestres de una titulación </mat-option>
                 <mat-option value=4>Gráfica de lineas          - Matriculados en un curso de una titulación </mat-option>
             </mat-select>
         </mat-form-field>
     </form>
-
-
 
    <app-filtro1 *ngIf="formularioGrafico.value.graficoSeleccionado=='1'" (borraGrafica)="informacionGraficosAMostrar=null">
 
@@ -30,13 +28,13 @@
 
     </app-filtro2>
 
-    <app-filtro2 *ngIf="formularioGrafico.value.graficoSeleccionado=='3'" (borraGrafica)="informacionGraficosAMostrar=null">
+    <app-filtro3 *ngIf="formularioGrafico.value.graficoSeleccionado=='3'" (borraGrafica)="informacionGraficosAMostrar=null">
 
-    </app-filtro2>
+    </app-filtro3>
 
-    <app-filtro2 *ngIf="formularioGrafico.value.graficoSeleccionado=='4'" (borraGrafica)="informacionGraficosAMostrar=null">
+    <app-filtro4 *ngIf="formularioGrafico.value.graficoSeleccionado=='4'" (borraGrafica)="informacionGraficosAMostrar=null">
 
-    </app-filtro2>
+    </app-filtro4>
 
     <button style="margin-top: 10px" (click)="createChart()" class="btn btn-primary with-icon">
         <mat-icon style="margin-right: 5px;"> show_chart</mat-icon>

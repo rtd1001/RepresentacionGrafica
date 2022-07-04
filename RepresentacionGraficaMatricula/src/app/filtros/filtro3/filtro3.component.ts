@@ -43,12 +43,6 @@ export class Filtro3Component implements OnInit {
     return docs;
   }
 
-  addRow() {
-    this.dynamicAux = { docs: "", degrees: "", years: ""};
-    this.dynamicSeries.push(this.dynamicAux);
-    return true;
-  }
-
   changeDoc(value, i) {
     this.borraGrafica.emit(1);
     this.selectedDoc = value;
@@ -96,21 +90,16 @@ export class Filtro3Component implements OnInit {
   resetDegree(i) {
     this.dynamicSeries[i].degrees = "";
   }
-  
-  resetYear(i) {
-    this.dynamicSeries[i].years = "";
-  }
 
   makeData(): any {
 
     let serieCompleta = true;
-      for (var i = 0; i < this.dynamicSeries.length; i++) {
-          Object.keys(this.dynamicSeries[i]).forEach(key => {
-              if (this.dynamicSeries[i][key] === "") {
-                  serieCompleta = false;
-              }
-          });
-      }
+        Object.keys(this.dynamicSeries[0]).forEach(key => {
+            if (this.dynamicSeries[0][key] === "") {
+                serieCompleta = false;
+            }
+        });
+      
   
       if (!serieCompleta) {
           alert('Las series no están completas. Termine de seleccionar las opciones.');
@@ -119,28 +108,26 @@ export class Filtro3Component implements OnInit {
         var dataSerie = [];
         console.log(this.dynamicSeries.length)
   
-        for (var i = 0; i < this.dynamicSeries.length; i++) {
-  
-          var data = this.xlsData[this.dynamicSeries[i].docs];
-          var info = data[this.dynamicSeries[i].degrees].data.filter(row => (
+          var data = this.xlsData[this.dynamicSeries[0].docs];
+          var info = data[this.dynamicSeries[0].degrees].data.filter(row => (
               row.asig_tipAcademica == 'Teoría'
               && row.asig_activ == 'S'));
               console.log('info')   
           console.log(info)
-          var semesterDuplicates = [];
           var groupsDuplicates = [];
           var descriptionDuplicates = [];
           var yearDuplicates = [];
+          var semesterDuplicates = [];
           Object.keys(info).forEach(key => {
               groupsDuplicates.push(info[key].asig_grupo);
-              descriptionDuplicates.push(info[key].asig_descripcion);
+            //  descriptionDuplicates.push(info[key].asig_descripcion);
+             // yearDuplicates.push(info[key].asig_curso);
               yearDuplicates.push(info[key].asig_curso);
               semesterDuplicates.push(info[key].asig_vp);
-              yearDuplicates.push(info[key].asig_curso);
           });
   
           var groups = Array.from(new Set(groupsDuplicates));
-          var description = Array.from(new Set(descriptionDuplicates));
+          //var description = Array.from(new Set(descriptionDuplicates));
           var year = Array.from(new Set(yearDuplicates));
           var semester = Array.from(new Set(semesterDuplicates));
           
@@ -151,8 +138,17 @@ export class Filtro3Component implements OnInit {
           console.log('year')
           console.log(year)
           console.log('semester')
-          console.log(semester)
+          console.log(semesterDuplicates)
 
+          
+          let semesterNum =[]
+          let semesterValue = year.length * semester.length;
+          console.log(semesterValue)
+          for(let s = 1; s <= semesterValue; s++){
+            semesterNum.push(s);
+          }
+
+          let sNum = 0;
           var series = []
           var sumaGrupo = 0;
           for (var w = 0; w < year.length; w++){
@@ -163,86 +159,56 @@ export class Filtro3Component implements OnInit {
 
               var info_semester = info_year.filter(row => row.asig_vp == semester[y])
 
+              var descriptionDuplicates = [];
+              Object.keys(info_semester).forEach(key => {
+                  descriptionDuplicates.push(info_semester[key].asig_descripcion);
+              });
+    
+              var description = Array.from(new Set(descriptionDuplicates));
+
               for (var z = 0; z < description.length; z++){
 
                 var info_description = info_semester.filter(row => row.asig_descripcion == description[z])
 
+                let sumaGrupo = 0;
+                for (var j = 0; j < groups.length; j++) {
+                  
+                  var info_group = info_description.filter(row => row.asig_grupo == groups[j])
+
+                  Object.keys(info_group).forEach(key => {
+                    sumaGrupo += info_group[key].alum_total;
+                  });
+
+                }
                 
-              }              
-            }
-          }
+                var groupInfo;
+                groupInfo = {
+                name: description[z],
+                value: sumaGrupo
+                }
+                
+                //si existe la serie
+                if (dataSerie[sNum]?.series){
+                  dataSerie[sNum]?.series.push(groupInfo)
+                }else{
+                  dataSerie[sNum] = {
+                    name: 'Semestre ' + semesterNum[sNum],
+                    series: [groupInfo]
+                  }
+                }
 
-          for (var z = 0; z < description.length; z++){
-  
-            var info_description = info.filter(row => row.asig_descripcion == description[z])
-            console.log(info_description)
-  
-            sumaGrupo = 0;
-            for (var j = 0; j < groups.length; j++) {
-  
-              var info_group = info_description.filter(row => row.asig_grupo == groups[j])
-              console.log(info_group)
-  
-              Object.keys(info_group).forEach(key => {
-                  sumaGrupo += info_group[key].alum_total;
-  
-              });
+              }     
+              sNum = sNum + 1;         
             }
-  
-            var groupInfo = []
-            groupInfo.push({
-              name: this.dynamicSeries[i].docs,
-              value: sumaGrupo
-            })
-            groupInfo[z]
             
-            dataSerie[z] = {
-              name: description[z],
-              series: groupInfo
-            }
-  
-            /*    var groupInfo = {}
-            groupInfo = {
-              name: this.dynamicSeries[i].docs,
-              value: sumaGrupo
-            }*/
-            /*
-            var groupInfo = []
-            groupInfo.push({
-              name: this.dynamicSeries[i].docs,
-              value: sumaGrupo
-            })
-            */
-          
-             //  series[z] = groupInfo;
-            /*   dataSerie[z] = {
-              name: description[z],
-              series: series
-            }*/
-            /*
-            if (i = 0){
-              dataSerie[z] = {
-                name: description[z],
-                series: groupInfo
-              }
-            }else{
-              dataSerie[z] = {
-                name: description[z],
-                series: series.push(groupInfo)
-              }
-            }
-            */
-          
           }
-  
-  
-        }
 
-          console.log('dataSerie')
-          console.log(dataSerie)
-         
-          return dataSerie;
-  
+        
+
+        console.log('dataSerie')
+        console.log(dataSerie)
+        
+        return dataSerie;
   
       }//else
     }//makeData

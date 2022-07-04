@@ -20,6 +20,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { FiltroGraficasService } from '../services/filtroGraficas.service';
 import { Filtro1Component } from '../filtros/filtro1/filtro1.component';
 import { Filtro2Component } from '../filtros/filtro2/filtro2.component';
+import { Filtro3Component } from '../filtros/filtro3/filtro3.component';
+import { Filtro4Component } from '../filtros/filtro4/filtro4.component';
 
 type ApexXAxis = {
     type?: "category" | "datetime" | "numeric";
@@ -84,6 +86,8 @@ export class DetailsComponent implements OnInit {
 
     @ViewChild(Filtro1Component,{static:false}) filtro1Component:Filtro1Component;
     @ViewChild(Filtro2Component,{static:false}) filtro2Component:Filtro2Component;
+    @ViewChild(Filtro3Component,{static:false}) filtro3Component:Filtro3Component;
+    @ViewChild(Filtro4Component,{static:false}) filtro4Component:Filtro4Component;
 
     @ViewChild("chart") chart: ChartComponent;
     public chartOptions: Partial<ChartOptions>;
@@ -273,13 +277,13 @@ export class DetailsComponent implements OnInit {
                     case '3':
                         this.tipoGrafico = 'caja2';
                         this.selectedChart = Number(graficoSeleccionado);
-                        this.informacionGraficosAMostrar = this.filtro2Component.makeData();
+                        this.informacionGraficosAMostrar = this.filtro3Component.makeData();
                         console.log(this.informacionGraficosAMostrar)
                         break;
                     case '4':
                     this.tipoGrafico = 'linea';
                     this.selectedChart = Number(graficoSeleccionado);
-                    this.informacionGraficosAMostrar = this.filtro2Component.makeData();
+                    this.informacionGraficosAMostrar = this.filtro4Component.makeData();
                     console.log(this.informacionGraficosAMostrar)
                     break;
                 }
