@@ -51,6 +51,7 @@ export class Filtro2Component implements OnInit {
     for (const key of Object.keys(this.xlsData)) {
         docs.push(key);
     }
+    
     return docs;
 }
 
@@ -163,6 +164,8 @@ resetYear(i) {
 makeData(): any {
 
   let serieCompleta = true;
+  let numSeries = this.dynamicSeries.length;
+  console.log(numSeries)
     for (var i = 0; i < this.dynamicSeries.length; i++) {
         Object.keys(this.dynamicSeries[i]).forEach(key => {
             if (this.dynamicSeries[i][key] === "") {
@@ -173,7 +176,9 @@ makeData(): any {
 
     if (!serieCompleta) {
         alert('Las series no están completas. Termine de seleccionar las opciones.');
-    } else{
+    } /*else if(numSeries == 1){
+         alert('Debe añadir otra serie para poder visualizar el gráfico.');
+    }*/else{
 
       var dataSerie = [];
       

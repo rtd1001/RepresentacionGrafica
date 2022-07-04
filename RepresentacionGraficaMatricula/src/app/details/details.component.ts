@@ -281,11 +281,11 @@ export class DetailsComponent implements OnInit {
                         console.log(this.informacionGraficosAMostrar)
                         break;
                     case '4':
-                    this.tipoGrafico = 'linea';
-                    this.selectedChart = Number(graficoSeleccionado);
-                    this.informacionGraficosAMostrar = this.filtro4Component.makeData();
-                    console.log(this.informacionGraficosAMostrar)
-                    break;
+                        this.tipoGrafico = 'linea';
+                        this.selectedChart = Number(graficoSeleccionado);
+                        this.informacionGraficosAMostrar = this.filtro4Component.makeData();
+                        console.log(this.informacionGraficosAMostrar)
+                        break;
                 }
             
         }
