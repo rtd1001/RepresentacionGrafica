@@ -24,6 +24,7 @@ import { GrafCaja2Component } from './graficos/graf-caja2/graf-caja2.component';
 import { Filtro3Component } from './filtros/filtro3/filtro3.component';
 import { Filtro4Component } from './filtros/filtro4/filtro4.component';
 import { GrafLineaComponent } from './graficos/graf-linea/graf-linea.component';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
     declarations: [
@@ -38,6 +39,7 @@ import { GrafLineaComponent } from './graficos/graf-linea/graf-linea.component';
         Filtro3Component,
         Filtro4Component,
         GrafLineaComponent,
+        HeaderComponent,
     ],
     imports: [
         BrowserModule,

@@ -54,6 +54,18 @@ export class Filtro2Component implements OnInit {
     
     return docs;
 }
+/*
+borraDynamicSerie(i){
+  this.dynamicSeries[i].docs = this.selectedDoc;
+  for(let j = 0; j <this.dynamicSeries.length; j++){
+    if (j = i){
+      this.dynamicSeries[j].docs = ""
+      this.dynamicSeries[j].degrees = ""
+      this.dynamicSeries[j].years = ""
+    }
+  }
+
+}*/
 
 addRow() {
   this.dynamicAux = { docs: "", degrees: "", years: ""};
