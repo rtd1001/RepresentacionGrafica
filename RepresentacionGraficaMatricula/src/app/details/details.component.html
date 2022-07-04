@@ -42,24 +42,25 @@
     </button>
 
 
-</div>
+
 
 
 <!-- Muestra de graficos -->
 
 
-<div *ngIf="informacionGraficosAMostrar">
-    <div *ngIf="tipoGrafico === 'vertical'">
-        <app-graf-vertical [datos]="informacionGraficosAMostrar"></app-graf-vertical>
+    <div *ngIf="informacionGraficosAMostrar">
+        <div *ngIf="tipoGrafico === 'vertical'">
+            <app-graf-vertical [datos]="informacionGraficosAMostrar"></app-graf-vertical>
+        </div>
+        <div *ngIf="tipoGrafico === 'caja1'">
+            <app-graf-caja1 [datos]="informacionGraficosAMostrar"></app-graf-caja1>
+        </div>
+        <div *ngIf="tipoGrafico === 'caja2'">
+            <app-graf-caja2 [datos]="informacionGraficosAMostrar"></app-graf-caja2>
+        </div>
+        <div *ngIf="tipoGrafico === 'linea'">
+            <app-graf-linea [datos]="informacionGraficosAMostrar"></app-graf-linea>
+        </div>
     </div>
-    <div *ngIf="tipoGrafico === 'caja1'">
-        <app-graf-caja1 [datos]="informacionGraficosAMostrar"></app-graf-caja1>
-    </div>
-    <div *ngIf="tipoGrafico === 'caja2'">
-        <app-graf-caja2 [datos]="informacionGraficosAMostrar"></app-graf-caja2>
-    </div>
-    <div *ngIf="tipoGrafico === 'linea'">
-        <app-graf-linea [datos]="informacionGraficosAMostrar"></app-graf-linea>
-    </div>
-</div>
 
+</div>
