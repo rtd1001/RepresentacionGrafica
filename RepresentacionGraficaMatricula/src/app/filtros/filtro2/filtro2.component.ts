@@ -73,13 +73,18 @@ addRow() {
   return true;
 }
 
-changeDoc(value, i) {
+changeDoc(select, i,selectDegree,selectYear) {
   this.borraGrafica.emit(1);
+
+  console.log(selectDegree)
+  let value = select.value;
   this.selectedDoc = value;
   this.dynamicSeries[i].docs = this.selectedDoc;
 
   this.resetDegree(i);
+  selectDegree.control.reset();
   this.resetYear(i);
+  console.log(this.dynamicSeries)
  // this.resetSemester(i);
   var info = this.xlsData[this.selectedDoc];
 
@@ -90,24 +95,40 @@ changeDoc(value, i) {
       listAux.push(degreData[j]);
   }
   this.degreesList[i] = listAux;
-  
+ // this.fillSerie(selectDegree,selectYear,i);
+}
+/*
+fillSerie(selectDegree,selectYear,i){
+  if(this.dynamicSeries[i-1]){
+    if(this.degreesList[i].indexOf(this.dynamicSeries[i-1].degrees)){
+      selectDegree.control.setValue(this.dynamicSeries[i-1].degrees,{emitEvent:false});
+      this.changeDegree(selectDegree,i);
+      console.log(typeof this.yearsList[i][0])
+      console.log(typeof this.dynamicSeries[i-1].years)
+      console.log(this.yearsList[i].indexOf(this.dynamicSeries[i-1].years))
+      if(this.yearsList[i].indexOf(this.dynamicSeries[i-1].years)){
+       
+        console.log('entro if year')
+        selectYear.control.setValue(this.dynamicSeries[i-1].years,{emitEvent:false});
+        console.log(selectYear)
+        this.changeYear(selectYear,i);
+      }
+    }
+  }
+}*/
+
+makeEquality(i){
+  let serieActual = this.dynamicSeries[i];
+  for(let serie of this.dynamicSeries){
+    serie.degrees = serieActual.degrees;
+    serie.years = serieActual.years;
+  }
 }
 
 changeDegree(select, i) {
   this.borraGrafica.emit(1);
-  let error;
-  let value = select.value;
-  for(let serie of this.dynamicSeries){
-    let degree = serie.degrees;
-    if(degree){
-      if(degree != value){
-        error = true;
-        alert("Se debe seleccionar el mismo grado/master.")
-        select.control.reset();
-      }
-    }
-  }
-  if(!error){
+  console.log('entro changeDegree')
+    let value = select.value;
     this.selectedDegree = value;
     this.dynamicSeries[i].degrees = this.selectedDegree;
 
@@ -128,41 +149,31 @@ changeDegree(select, i) {
         listAux.push(year[z]);
     }
     this.yearsList[i] = listAux;
-  }
+    this.makeEquality(i);
 }
 
 changeYear(select, i) {
 this.borraGrafica.emit(1);
-  let error;
+  
   let value = select.value;
-  for(let serie of this.dynamicSeries){
-    let year = serie.years;
-    if(year){
-      if(year != value){
-        error = true;
-        alert("Se debe seleccionar el mismo curso.")
-        select.control.reset();
-      }
-    }
+  
+  this.selectedYear = value;
+  this.dynamicSeries[i].years = this.selectedYear;
+
+  var info = this.xlsData[this.selectedDoc];
+
+  var selectedInfo = info[this.selectedDegree].data.filter(row => (row.asig_curso == this.selectedYear));;
+
+  var semesterDuplicates = []
+  Object.keys(selectedInfo).forEach(key => {
+      semesterDuplicates.push(selectedInfo[key].asig_vp);
+  });
+  var semester = Array.from(new Set(semesterDuplicates))
+  var listAux = []
+  for (var z = 0; z < semester.length; z++) {
+      listAux.push(semester[z]);
   }
-  if(!error){
-    this.selectedYear = value;
-    this.dynamicSeries[i].years = this.selectedYear;
-
-    var info = this.xlsData[this.selectedDoc];
-
-    var selectedInfo = info[this.selectedDegree].data.filter(row => (row.asig_curso == this.selectedYear));;
-
-    var semesterDuplicates = []
-    Object.keys(selectedInfo).forEach(key => {
-        semesterDuplicates.push(selectedInfo[key].asig_vp);
-    });
-    var semester = Array.from(new Set(semesterDuplicates))
-    var listAux = []
-    for (var z = 0; z < semester.length; z++) {
-        listAux.push(semester[z]);
-    }
-  }
+  this.makeEquality(i);
 }
 
 resetDegree(i) {

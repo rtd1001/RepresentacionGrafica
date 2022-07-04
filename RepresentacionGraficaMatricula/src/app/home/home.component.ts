@@ -21,6 +21,7 @@ export class HomeComponent implements OnInit {
 
     formularioExcel: FormGroup;
 
+    ficheroPendiente = 0;
     /** Atributo para controlar el mostrar el spinner cargando o no */
     cargando: boolean = false;
 
@@ -38,11 +39,14 @@ export class HomeComponent implements OnInit {
 
     onFileSelected(event) {
         //Subimos un fichero, mostramos spinner
-        this.cargando = true;
-        const file = event.target.files[0];
-        //Comprobamos la validación y lo sumamos
-        if (!this.validateFileExtension(file)) {
-            this.leeYSumaFichero(file);
+        this.ficheroPendiente = event.target.files.length;
+        for(let file of event.target.files){
+            this.cargando = true;
+
+            //Comprobamos la validación y lo sumamos
+            if (!this.validateFileExtension(file)) {
+                this.leeYSumaFichero(file);
+            }
         }
 
     }
@@ -59,6 +63,7 @@ export class HomeComponent implements OnInit {
 
         if (ext != 'xls') {
             this.cargando = false;
+            this.ficheroPendiente--;
             this.formularioExcel.reset();
             alert('El archivo ' + fileName + ' no tiene la extensión adecuada. Vuelva a introducir otro archivo.');
             return true;
@@ -91,6 +96,7 @@ export class HomeComponent implements OnInit {
 
             const xlsDataAux = this.readWorksheet(worksheet);
             this.cargando = false;
+            this.ficheroPendiente--;
 
             //Almaceno los archivos parseados
             this.xlsData[currentFile.name] = xlsDataAux;

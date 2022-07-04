@@ -2,7 +2,7 @@
     <div class="child">
         <form [formGroup]="formularioExcel">
             <input type="file" class="file-input" id="fileInput" formControlName="excel"
-                (change)="onFileSelected($event)" accept=".xls" #fileUpload>
+                (change)="onFileSelected($event)" accept=".xls" #fileUpload multiple>
         </form>
 
 
@@ -13,7 +13,7 @@
             <button mat-button (click)="fileUpload.click()" class="btn btn-primary with-icon bt-icon-right btn-sm">
                 <mat-icon>add</mat-icon>
                 Añadir archivo
-                <div *ngIf="cargando" class="spinner-border spinner-border-sm" role="status" id="spinner"
+                <div *ngIf="cargando || ficheroPendiente > 0" class="spinner-border spinner-border-sm" role="status" id="spinner"
                     style="margin-left: 5px;">
                     <span class="sr-only">Loading...</span>
                 </div>
