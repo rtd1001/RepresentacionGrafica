@@ -19,14 +19,11 @@ export class GrafLineaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('datos')
-      console.log(this.datos)
-    /*  for (const dato of this.datos) {
-          this.datosGrafico.push({ name: dato.x, value: dato.y });
-      }
-      this.datosGrafico.push(this.datos);
-      console.log(this.datosGrafico);*/
-      this.datosGrafico = this.datos;
+    const datosLimpios = [];
+    for (const dato of this.datos) {
+        if (dato) datosLimpios.push(dato);
+    }
+    this.datosGrafico = datosLimpios;
   }
 
 }

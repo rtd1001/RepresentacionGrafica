@@ -23,15 +23,21 @@ export class GrafVerticalComponent implements OnInit {
 
     ngOnInit(): void {
         console.log('datos 1')
-        console.log(this.datos)
+        console.log(this.datosGrafico)
        /* for (const dato of this.datos) {
             this.datosGrafico.push({ name: dato.x, value: dato.y });
         }*/
-        this.datosGrafico = this.datos;
+
+        const datosLimpios = [];
+        for (const dato of this.datos) {
+            if (dato) datosLimpios.push(dato);
+        }
+        this.datosGrafico = datosLimpios;
+
         console.log(this.datosGrafico);
 
         let maximo = 0;
-        for (let dato of this.datos){
+        for (let dato of this.datosGrafico){
             let sumSerie = 0;
             for(let serie of dato.series){
                 sumSerie += serie.value;

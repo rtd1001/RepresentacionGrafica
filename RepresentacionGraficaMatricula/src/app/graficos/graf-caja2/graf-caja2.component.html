@@ -1,5 +1,5 @@
 <div class="primerGrafico">
-    <ngx-charts-box-chart   [results]="datosGrafico"
+    <ngx-charts-box-chart   *ngIf="datosGrafico"  [results]="datosGrafico"
         [legendTitle]="'Leyenda'" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxis]="true"
         [yAxis]="true" [gradient]="true" [showYAxisLabel]="true">
     </ngx-charts-box-chart>
