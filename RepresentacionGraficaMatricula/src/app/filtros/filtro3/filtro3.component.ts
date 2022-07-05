@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
 import { Series } from 'src/app/series';
 import { XlsDataService } from 'src/app/services/xls-data.service';
 
@@ -13,22 +14,19 @@ export class Filtro3Component implements OnInit {
   dynamicAux: any = {};
   xlsData: any[];
 
-  degreesList = {}
+  degreesList = []
   docsList = []
 
-  selectedDoc: any = '';
-  selectedDegree: any = '';
-
   @Output()borraGrafica:EventEmitter<number>=new EventEmitter();
+ 
+  formSeries: FormGroup = new FormGroup({});
 
   constructor(
     private _xlsData: XlsDataService
   ) { }
 
   ngOnInit(): void {
-    this.dynamicAux = { degrees: "" };
-    this.dynamicSeries.push(this.dynamicAux);
-
+    this.addRow();
 
     //Obtengo el excel y saco el listado de documentos
     this.xlsData = this._xlsData.getXlsData();
@@ -43,52 +41,50 @@ export class Filtro3Component implements OnInit {
     return docs;
   }
 
-  changeDoc(value, i) {
-    this.borraGrafica.emit(1);
-    this.selectedDoc = value;
-    this.dynamicSeries[i].docs = this.selectedDoc;
-  
-    this.resetDegree(i);
+  addRow() {
+    const i = this.dynamicSeries.length;
+    if (i < 5) {
+        this.formSeries.addControl(`doc${i}`, new FormControl());
+        this.formSeries.addControl(`degree${i}`, new FormControl());
+        this.formSeries.get(`doc${i}`).valueChanges.subscribe(doc => {
+            this.changeDoc(i, doc);
+        })
+        this.formSeries.get(`degree${i}`).valueChanges.subscribe(degree => {
+            this.changeDegree(i, degree);
+        })
+        this.dynamicSeries.push({ docs: "", degrees: "", years: "" });
+    } else {
+        alert('Limite de series alcanzado')
+    }
+  }
 
-   // this.resetSemester(i);
-    var info = this.xlsData[this.selectedDoc];
-  
-    var xlsDataKey = Object.keys(info);
-    var degreData = Object.values(xlsDataKey);
-    var listAux = [];
-    for (var j = 0; j < degreData.length; j++) {
+  changeDoc(i, value) {
+    this.borraGrafica.emit(1);
+
+    this.dynamicSeries[i].docs = value;
+
+    this.resetDegree(i);
+    const info = this.xlsData[value];
+
+    const xlsDataKey = Object.keys(info);
+    const degreData = Object.values(xlsDataKey);
+    const listAux = [];
+    for (let j = 0; j < degreData.length; j++) {
         listAux.push(degreData[j]);
     }
     this.degreesList[i] = listAux;
   }
 
-  changeDegree(value, i) {
+  changeDegree(i, value) {
     this.borraGrafica.emit(1);
-    this.selectedDegree = value;
-    this.dynamicSeries[i].degrees = this.selectedDegree;
-  
-    //this.resetYear(i);
-   // this.resetSemester(i);
-  
-    var info = this.xlsData[this.selectedDoc];
-  
-    var data = info[this.selectedDegree].data;
-  
-    var yearDuplicates = []
-    Object.keys(data).forEach(key => {
-        yearDuplicates.push(data[key].asig_curso);
-    });
-  
-    var year = Array.from(new Set(yearDuplicates))
-    var listAux = [];
-    for (var z = 0; z < year.length; z++) {
-        listAux.push(year[z]);
-    }
-    //this.yearsList[i] = listAux;
+
+    this.dynamicSeries[i].degrees = value;
+
   }
 
   resetDegree(i) {
-    this.dynamicSeries[i].degrees = "";
+    this.formSeries.get(`degree${i}`).reset(null, { emitEvent: false });
+    this.degreesList[i] = [];
   }
 
   makeData(): any {

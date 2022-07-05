@@ -20,8 +20,7 @@ export class Filtro2Component implements OnInit {
 
   @Output()borraGrafica:EventEmitter<number>=new EventEmitter();
 
-  formSeries: FormGroup = new FormGroup({
-  });
+  formSeries: FormGroup = new FormGroup({});
 
   constructor(
     private _xlsData: XlsDataService

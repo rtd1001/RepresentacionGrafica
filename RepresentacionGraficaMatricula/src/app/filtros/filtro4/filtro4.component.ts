@@ -94,12 +94,16 @@ changeDoc(value, i) {
 }
 
 borraDynamicSerie(i) {
-  this.dynamicSeries.splice(i, 1);
-  this.formSeries.removeControl(`doc${i}`);
-  this.formSeries.removeControl(`degree${i}`);
-  this.formSeries.removeControl(`year${i}`);
-  this.degreesList[i] = [];
-  this.yearsList[i] = [];
+  if (this.dynamicSeries.length === 1) {
+    alert('No se pueden borrar todas las series')
+  } else {
+    this.dynamicSeries.splice(i, 1);
+    this.formSeries.removeControl(`doc${i}`);
+    this.formSeries.removeControl(`degree${i}`);
+    this.formSeries.removeControl(`year${i}`);
+    this.degreesList[i] = [];
+    this.yearsList[i] = [];
+  }
 }
 
 fillSerie(iActual) {
@@ -213,6 +217,11 @@ resetYear(i) {
 makeData(): any {
 
   let serieCompleta = true;
+
+  if (this.dynamicSeries.length < 2) {
+    alert('Se deben agregar al menos dos series para crear la gráfica')
+  }else{
+    
     for (var i = 0; i < this.dynamicSeries.length; i++) {
         Object.keys(this.dynamicSeries[i]).forEach(key => {
             if (this.dynamicSeries[i][key] === "") {
@@ -289,72 +298,22 @@ makeData(): any {
             }
           }
 
-          /*    var groupInfo = {}
-          groupInfo = {
-            name: this.dynamicSeries[i].docs,
-            value: sumaGrupo
-          }*/
-          /*
-          var groupInfo = []
-          groupInfo.push({
-            name: this.dynamicSeries[i].docs,
-            value: sumaGrupo
-          })
-          */
-        
-           //  series[z] = groupInfo;
-          /*   dataSerie[z] = {
-            name: description[z],
-            series: series
-          }*/
-          /*
-          if (i = 0){
-            dataSerie[z] = {
-              name: description[z],
-              series: groupInfo
-            }
-          }else{
-            dataSerie[z] = {
-              name: description[z],
-              series: series.push(groupInfo)
-            }
-          }
-          */
-        
+         
         }
 
 
       }
 
-
-
-
-      /*
-        for (var w = 0; w < description.length; w++){
-
-
-          dataSerie[w] = {
-            name: description[w],
-            series: groupInfo[w]
-          }
-          
-        }*/
         console.log('dataSerie')
         console.log(dataSerie)
-        /*
-        dataSerie[i] = {
-            x: this.selectedDegree + '-' + this.selectedYear + '-' + this.selectedSemester,
-            y: average,
-            maxY: maxAverage,
-        //    chartInfo: groupInfo,
-            des: descriptionArray,
-            maxY_group: maxGroup
-        }
-      */
+       
+      
         return dataSerie;
 
 
     }//else
+    
+  }
   }//makeData
 
 }

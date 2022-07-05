@@ -1,5 +1,6 @@
 import { ListKeyManager } from '@angular/cdk/a11y';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Series } from 'src/app/series';
 import { XlsDataService } from 'src/app/services/xls-data.service';
 
@@ -15,9 +16,9 @@ export class Filtro1Component implements OnInit {
     dynamicAux: any = {};
     xlsData: any[];
 
-    degreesList = {}
-    yearsList = {}
-    semestersList = {}
+    degreesList = []
+    yearsList = []
+    semestersList = []
     docsList = []
 
     selectedDoc: any = '';
@@ -27,13 +28,14 @@ export class Filtro1Component implements OnInit {
 
     @Output()borraGrafica:EventEmitter<number>=new EventEmitter();
 
+    formSeries: FormGroup = new FormGroup({});
+
     constructor(
         private _xlsData: XlsDataService
     ) { }
 
     ngOnInit(): void {
-        this.dynamicAux = { degrees: "", years: "", semesters: "" };
-        this.dynamicSeries.push(this.dynamicAux);
+        this.addRow();
 
 
         //Obtengo el excel y saco el listado de documentos
@@ -54,44 +56,64 @@ export class Filtro1Component implements OnInit {
     }
 
     addRow() {
-        this.dynamicAux = { docs: "", degrees: "", years: "", semesters: "" };
-        this.dynamicSeries.push(this.dynamicAux);
-        return true;
+        const i = this.dynamicSeries.length;
+        if (i < 5) {
+            this.formSeries.addControl(`doc${i}`, new FormControl());
+            this.formSeries.addControl(`degree${i}`, new FormControl());
+            this.formSeries.addControl(`year${i}`, new FormControl());
+            this.formSeries.addControl(`semester${i}`, new FormControl());
+            this.formSeries.get(`doc${i}`).valueChanges.subscribe(doc => {
+                this.changeDoc(i, doc);
+            })
+            this.formSeries.get(`degree${i}`).valueChanges.subscribe(degree => {
+                this.changeDegree(i, degree);
+            })
+            this.formSeries.get(`year${i}`).valueChanges.subscribe(year => {
+                this.changeYear(i, year);
+            })
+            this.formSeries.get(`semester${i}`).valueChanges.subscribe(semester => {
+                this.changeSemester(i, semester);
+            })
+            this.dynamicSeries.push({ docs: "", degrees: "", years: "", semesters: "" });
+        } else {
+            alert('Limite de series alcanzado')
+        }
     }
 
 
-    changeDoc(value, i) {
+    changeDoc(i, value) {
         this.borraGrafica.emit(1);
-        this.selectedDoc = value;
-        this.dynamicSeries[i].docs = this.selectedDoc;
+
+        this.dynamicSeries[i].docs = value;
 
         this.resetDegree(i);
         this.resetYear(i);
         this.resetSemester(i);
-        var info = this.xlsData[this.selectedDoc];
+        const info = this.xlsData[value];
 
-        var xlsDataKey = Object.keys(info);
-        var degreData = Object.values(xlsDataKey);
-        var listAux = [];
-        for (var j = 0; j < degreData.length; j++) {
+        const xlsDataKey = Object.keys(info);
+        const degreData = Object.values(xlsDataKey);
+        const listAux = [];
+        for (let j = 0; j < degreData.length; j++) {
             listAux.push(degreData[j]);
         }
         this.degreesList[i] = listAux;
 
     }
 
-    changeDegree(value, i) {
+    changeDegree(i, value) {
         this.borraGrafica.emit(1);
-        this.selectedDegree = value;
-        this.dynamicSeries[i].degrees = this.selectedDegree;
 
-        this.resetYear(i);
-        this.resetSemester(i);
+        this.dynamicSeries[i].degrees = value;
+        this.formSeries.get(`semester${i}`).reset();
+        this.formSeries.get(`year${i}`).reset();
 
-        var info = this.xlsData[this.selectedDoc];
+        this.makeYearList(i, value);
+    }
 
-        var data = info[this.selectedDegree].data;
-
+    makeYearList(i, value) {
+        var info = this.xlsData[this.formSeries.get(`doc${i}`).value];
+        var data = info[value].data;
         var yearDuplicates = []
         Object.keys(data).forEach(key => {
             yearDuplicates.push(data[key].asig_curso);
@@ -105,16 +127,12 @@ export class Filtro1Component implements OnInit {
         this.yearsList[i] = listAux;
     }
 
-    changeYear(value, i) {
+    changeYear(i, value) {
         this.borraGrafica.emit(1);
-        this.selectedYear = value;
-        this.dynamicSeries[i].years = this.selectedYear;
 
-        this.resetSemester(i);
-
-        var info = this.xlsData[this.selectedDoc];
-
-        var selectedInfo = info[this.selectedDegree].data.filter(row => (row.asig_curso == this.selectedYear));;
+        this.dynamicSeries[i].years = value;
+        var info = this.xlsData[this.formSeries.get(`doc${i}`).value];
+        var selectedInfo = info[this.formSeries.get(`degree${i}`).value].data.filter(row => (row.asig_curso == value));;
 
         var semesterDuplicates = []
         Object.keys(selectedInfo).forEach(key => {
@@ -129,23 +147,26 @@ export class Filtro1Component implements OnInit {
 
     }
 
-    changeSemester(value, i) {
+    changeSemester(i, value) {
         this.borraGrafica.emit(1);
-        this.selectedSemester = value;
-        this.dynamicSeries[i].semesters = this.selectedSemester;
+
+        this.dynamicSeries[i].semesters = value;
 
     }
 
     resetDegree(i) {
-        this.dynamicSeries[i].degrees = "";
+        this.formSeries.get(`degree${i}`).reset(null, { emitEvent: false });
+        this.degreesList[i] = [];
     }
 
     resetYear(i) {
-        this.dynamicSeries[i].years = "";
+        this.formSeries.get(`year${i}`).reset(null, { emitEvent: false });
+        this.yearsList[i] = [];
     }
 
     resetSemester(i) {
-        this.dynamicSeries[i].semesters = "";
+        this.formSeries.get(`semester${i}`).reset(null, { emitEvent: false });
+        this.semestersList[i] = [];
     }
 
 
@@ -168,11 +189,11 @@ export class Filtro1Component implements OnInit {
             var dataSerie = [];
 
             //Obtengo la informacion del doc seleccionado
-            var data = this.xlsData[this.selectedDoc];
+            var data = this.xlsData[this.formSeries.get('doc0').value];
             //Se filtra la informacion segun lo seleccionado
-            var info = data[this.selectedDegree].data.filter(row => (
-                row.asig_curso == this.selectedYear
-                && row.asig_vp == this.selectedSemester
+            var info = data[this.formSeries.get('degree0').value].data.filter(row => (
+                row.asig_curso == this.formSeries.get('year0').value
+                && row.asig_vp == this.formSeries.get('semester0').value
                 && row.asig_tipAcademica == 'Teoría'
                 && row.asig_activ == 'S'));
 
