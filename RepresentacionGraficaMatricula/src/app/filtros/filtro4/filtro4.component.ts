@@ -19,10 +19,6 @@ export class Filtro4Component implements OnInit {
   yearsList = []
   docsList = []
 
-  selectedDoc: any = '';
-  selectedDegree: any = '';
-  selectedYear: any = '';
-
   @Output()borraGrafica:EventEmitter<number>=new EventEmitter();
 
   formSeries: FormGroup = new FormGroup({
@@ -73,23 +69,26 @@ addRow() {
   }
 }
 
-changeDoc(value, i) {
+changeDoc(i, value) {
   this.borraGrafica.emit(1);
-  this.selectedDoc = value;
-  this.dynamicSeries[i].docs = this.selectedDoc;
+
+  this.dynamicSeries[i].docs = value;
 
   this.resetDegree(i);
   this.resetYear(i);
- // this.resetSemester(i);
-  var info = this.xlsData[this.selectedDoc];
 
-  var xlsDataKey = Object.keys(info);
-  var degreData = Object.values(xlsDataKey);
-  var listAux = [];
-  for (var j = 0; j < degreData.length; j++) {
+  const info = this.xlsData[value];
+
+  const xlsDataKey = Object.keys(info);
+  const degreData = Object.values(xlsDataKey);
+  const listAux = [];
+  for (let j = 0; j < degreData.length; j++) {
       listAux.push(degreData[j]);
   }
   this.degreesList[i] = listAux;
+  if (this.formSeries.get(`doc${(i - 1)}`)?.value) {
+      this.fillSerie(i - 1);
+  }
   
 }
 
@@ -133,28 +132,6 @@ fillSerie(iActual) {
   }
 }
 
-changeDeoc(i, value) {
-  this.borraGrafica.emit(1);
-
-  this.dynamicSeries[i].docs = value;
-
-  this.resetDegree(i);
-  this.resetYear(i);
-
-  const info = this.xlsData[value];
-
-  const xlsDataKey = Object.keys(info);
-  const degreData = Object.values(xlsDataKey);
-  const listAux = [];
-
-  for (let j = 0; j < degreData.length; j++) {
-      listAux.push(degreData[j]);
-  }
-  this.degreesList[i] = listAux;
-  if(this.formSeries.get(`doc${(i-1)}`)?.value){
-      this.fillSerie(i-1);
-  }
-}
 
 makeEquality(i){
   let serieActual = this.dynamicSeries[i];
@@ -200,6 +177,11 @@ changeYear(i, value) {
   Object.keys(selectedInfo).forEach(key => {
       semesterDuplicates.push(selectedInfo[key].asig_vp);
   });
+  var semester = Array.from(new Set(semesterDuplicates))
+  var listAux = []
+  for (var z = 0; z < semester.length; z++) {
+      listAux.push(semester[z]);
+  }
   this.fillSerie(i);
 }
 
