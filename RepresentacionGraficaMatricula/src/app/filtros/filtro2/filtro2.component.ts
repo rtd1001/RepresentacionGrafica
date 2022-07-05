@@ -194,6 +194,9 @@ makeData(): any {
 
   let serieCompleta = true;
   let numSeries = this.dynamicSeries.length;
+  if (this.dynamicSeries.length < 2) {
+    alert('Se deben agregar al menos dos series para crear la gráfica')
+  }else{
   console.log(numSeries)
     for (var i = 0; i < this.dynamicSeries.length; i++) {
         Object.keys(this.dynamicSeries[i]).forEach(key => {
@@ -279,6 +282,7 @@ makeData(): any {
       return dataSerie;
 
     }//else
+  }
   }//makeData
   
 }//class
