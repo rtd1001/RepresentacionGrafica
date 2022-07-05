@@ -15,6 +15,10 @@ export class XlsDataService {
 
     setXlsData(data: {}) {
         this.xlsData = data;
-      //  localStorage.setItem('excel', JSON.stringify(this.xlsData));
+        try{
+            localStorage.setItem('excel', JSON.stringify(this.xlsData));
+        }catch(e){
+
+        }
     }
 }

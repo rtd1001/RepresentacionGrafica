@@ -1,19 +1,14 @@
 div {
-    width: 100%;
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
+    width: 75vw;
+    max-width: 75vw;
 }
 
-.primerGrafico{
+.primerGrafico {
     position: absolute;
     bottom: 0;
     min-height: 50vh;
 }
 
-::ng-deep
-    .g > text{
-        transform: rotate(-60);
-    }
+::ng-deep text {
+    transform: rotate(-25deg) !important;
+}

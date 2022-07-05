@@ -4,6 +4,7 @@ body {
 
 .container{
   padding: 10px;
+  width: 75vw;
 }
 .with-icon {
     display: flex;

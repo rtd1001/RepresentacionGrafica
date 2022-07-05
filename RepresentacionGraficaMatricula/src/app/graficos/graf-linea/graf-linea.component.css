@@ -12,3 +12,7 @@ div {
     bottom: 0;
     min-height: 50vh;
 }
+
+::ng-deep text {
+    transform: rotate(-25deg) !important;
+} 
