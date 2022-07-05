@@ -4,8 +4,6 @@ div {
 }
 
 .primerGrafico{
-    position: absolute;
-    bottom: 0;
     min-height: 50vh;
     margin-top: 15vh;
 }
