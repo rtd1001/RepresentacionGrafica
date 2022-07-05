@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Series } from 'src/app/series';
 import { XlsDataService } from 'src/app/services/xls-data.service';
 
@@ -13,25 +14,21 @@ export class Filtro2Component implements OnInit {
   dynamicAux: any = {};
   xlsData: any[];
   
-  degreesList = {}
-  yearsList = {}
+  degreesList = []
+  yearsList = []
   docsList = []
-
-  selectedDoc: any = '';
-  selectedDegree: any = '';
-  selectedYear: any = '';
 
   @Output()borraGrafica:EventEmitter<number>=new EventEmitter();
 
+  formSeries: FormGroup = new FormGroup({
+  });
+
   constructor(
-    private _xlsData: XlsDataService,
-    private cdref: ChangeDetectorRef
+    private _xlsData: XlsDataService
   ) { }
 
   ngOnInit(): void {
-    this.dynamicAux = { degrees: "", years: "" };
-    this.dynamicSeries.push(this.dynamicAux);
-
+    this.addRow();
 
     //Obtengo el excel y saco el listado de documentos
     this.xlsData = this._xlsData.getXlsData();
@@ -39,9 +36,6 @@ export class Filtro2Component implements OnInit {
 
   }
 
-  ngAfterViewInit(){
-    this.cdref.detectChanges();
-  }
   /**
      * Obtiene el listado de documentos
      * @returns Listado de documentos según los excel subidos
@@ -54,68 +48,88 @@ export class Filtro2Component implements OnInit {
     
     return docs;
 }
-/*
-borraDynamicSerie(i){
-  this.dynamicSeries[i].docs = this.selectedDoc;
-  for(let j = 0; j <this.dynamicSeries.length; j++){
-    if (j = i){
-      this.dynamicSeries[j].docs = ""
-      this.dynamicSeries[j].degrees = ""
-      this.dynamicSeries[j].years = ""
-    }
-  }
-
-}*/
 
 addRow() {
-  this.dynamicAux = { docs: "", degrees: "", years: ""};
-  this.dynamicSeries.push(this.dynamicAux);
-  return true;
+  const i = this.dynamicSeries.length;
+  if (i < 5) {
+      this.formSeries.addControl(`doc${i}`, new FormControl());
+      this.formSeries.addControl(`degree${i}`, new FormControl());
+      this.formSeries.addControl(`year${i}`, new FormControl());
+      this.formSeries.get(`doc${i}`).valueChanges.subscribe(doc => {
+          this.changeDoc(i, doc);
+      })
+      this.formSeries.get(`degree${i}`).valueChanges.subscribe(degree => {
+          this.changeDegree(i, degree);
+      })
+      this.formSeries.get(`year${i}`).valueChanges.subscribe(year => {
+          this.changeYear(i, year);
+      })
+      this.dynamicSeries.push({ docs: "", degrees: "", years: "" });
+  } else {
+      alert('Limite de series alcanzado')
+  }
 }
 
-changeDoc(select, i,selectDegree,selectYear) {
+
+borraDynamicSerie(i) {
+  this.dynamicSeries.splice(i, 1);
+  this.formSeries.removeControl(`doc${i}`);
+  this.formSeries.removeControl(`degree${i}`);
+  this.formSeries.removeControl(`year${i}`);
+  this.degreesList[i] = [];
+  this.yearsList[i] = [];
+}
+
+fillSerie(iActual) {
+  const degreeValue = this.formSeries.get(`degree${iActual}`).value;
+  const yearValue = this.formSeries.get(`year${iActual}`).value;
+  for (let i = 0; i < this.dynamicSeries.length; i++) {
+      if (i === iActual) continue;
+      else {
+          if (this.formSeries.get(`doc${i}`).value) {
+              //Si de la linea que recorremos, tiene documento seleccionado aunque sea
+              console.log(this.degreesList[i])
+              console.log(degreeValue)
+              console.log(this.degreesList[i].indexOf(degreeValue))
+              if (this.degreesList[i].indexOf(degreeValue)!=-1) {
+                  //Si el documento recorrido posee ese grado
+                  this.formSeries.get(`degree${i}`).setValue(degreeValue, { emitEvent: false });
+                  this.makeYearList(i, degreeValue);
+                  if (this.yearsList[i].indexOf(yearValue)!=-1) {
+                      //Si el grado seleccionado posee ese año
+                      this.formSeries.get(`year${i}`).setValue(yearValue, { emitEvent: false });
+                  }else{
+                      this.formSeries.get(`year${i}`).setValue(null, { emitEvent: false });
+                  }
+              }
+          }
+      }
+  }
+}
+
+changeDoc(i, value) {
   this.borraGrafica.emit(1);
 
-  console.log(selectDegree)
-  let value = select.value;
-  this.selectedDoc = value;
-  this.dynamicSeries[i].docs = this.selectedDoc;
+  this.dynamicSeries[i].docs = value;
 
   this.resetDegree(i);
-  selectDegree.control.reset();
   this.resetYear(i);
-  console.log(this.dynamicSeries)
- // this.resetSemester(i);
-  var info = this.xlsData[this.selectedDoc];
 
-  var xlsDataKey = Object.keys(info);
-  var degreData = Object.values(xlsDataKey);
-  var listAux = [];
-  for (var j = 0; j < degreData.length; j++) {
+  const info = this.xlsData[value];
+
+  const xlsDataKey = Object.keys(info);
+  const degreData = Object.values(xlsDataKey);
+  const listAux = [];
+
+  for (let j = 0; j < degreData.length; j++) {
       listAux.push(degreData[j]);
   }
   this.degreesList[i] = listAux;
- // this.fillSerie(selectDegree,selectYear,i);
-}
-/*
-fillSerie(selectDegree,selectYear,i){
-  if(this.dynamicSeries[i-1]){
-    if(this.degreesList[i].indexOf(this.dynamicSeries[i-1].degrees)){
-      selectDegree.control.setValue(this.dynamicSeries[i-1].degrees,{emitEvent:false});
-      this.changeDegree(selectDegree,i);
-      console.log(typeof this.yearsList[i][0])
-      console.log(typeof this.dynamicSeries[i-1].years)
-      console.log(this.yearsList[i].indexOf(this.dynamicSeries[i-1].years))
-      if(this.yearsList[i].indexOf(this.dynamicSeries[i-1].years)){
-       
-        console.log('entro if year')
-        selectYear.control.setValue(this.dynamicSeries[i-1].years,{emitEvent:false});
-        console.log(selectYear)
-        this.changeYear(selectYear,i);
-      }
-    }
+  if(this.formSeries.get(`doc${(i-1)}`)?.value){
+      this.fillSerie(i-1);
   }
-}*/
+
+}
 
 makeEquality(i){
   let serieActual = this.dynamicSeries[i];
@@ -125,63 +139,53 @@ makeEquality(i){
   }
 }
 
-changeDegree(select, i) {
+changeDegree(i, value) {
   this.borraGrafica.emit(1);
-  console.log('entro changeDegree')
-    let value = select.value;
-    this.selectedDegree = value;
-    this.dynamicSeries[i].degrees = this.selectedDegree;
 
-    this.resetYear(i);
-
-    var info = this.xlsData[this.selectedDoc];
-
-    var data = info[this.selectedDegree].data;
-
-    var yearDuplicates = []
-    Object.keys(data).forEach(key => {
-        yearDuplicates.push(data[key].asig_curso);
-    });
-
-    var year = Array.from(new Set(yearDuplicates))
-    var listAux = [];
-    for (var z = 0; z < year.length; z++) {
-        listAux.push(year[z]);
-    }
-    this.yearsList[i] = listAux;
-    this.makeEquality(i);
+  this.dynamicSeries[i].degrees = value;
+  this.formSeries.get(`year${i}`).reset();
+  this.makeYearList(i, value);
+  this.fillSerie(i);
 }
 
-changeYear(select, i) {
-this.borraGrafica.emit(1);
-  
-  let value = select.value;
-  
-  this.selectedYear = value;
-  this.dynamicSeries[i].years = this.selectedYear;
+makeYearList(i, value) {
+  var info = this.xlsData[this.formSeries.get(`doc${i}`).value];
+  var data = info[value].data;
+  var yearDuplicates = []
+  Object.keys(data).forEach(key => {
+      yearDuplicates.push(data[key].asig_curso);
+  });
 
-  var info = this.xlsData[this.selectedDoc];
+  var year = Array.from(new Set(yearDuplicates))
+  var listAux = [];
+  for (var z = 0; z < year.length; z++) {
+      listAux.push(year[z]);
+  }
+  this.yearsList[i] = listAux;
+}
 
-  var selectedInfo = info[this.selectedDegree].data.filter(row => (row.asig_curso == this.selectedYear));;
+changeYear(i, value) {
+  this.borraGrafica.emit(1);
+
+  this.dynamicSeries[i].years = value;
+  var info = this.xlsData[this.formSeries.get(`doc${i}`).value];
+  var selectedInfo = info[this.formSeries.get(`degree${i}`).value].data.filter(row => (row.asig_curso == value));;
 
   var semesterDuplicates = []
   Object.keys(selectedInfo).forEach(key => {
       semesterDuplicates.push(selectedInfo[key].asig_vp);
   });
-  var semester = Array.from(new Set(semesterDuplicates))
-  var listAux = []
-  for (var z = 0; z < semester.length; z++) {
-      listAux.push(semester[z]);
-  }
-  this.makeEquality(i);
+  this.fillSerie(i);
 }
 
 resetDegree(i) {
-  this.dynamicSeries[i].degrees = "";
+  this.formSeries.get(`degree${i}`).reset(null, { emitEvent: false });
+  this.degreesList[i] = [];
 }
 
 resetYear(i) {
-  this.dynamicSeries[i].years = "";
+  this.formSeries.get(`year${i}`).reset(null, { emitEvent: false });
+  this.yearsList[i] = [];
 }
 
 makeData(): any {

@@ -2,46 +2,56 @@
 
 <div style="margin-top: 40px">
 
-    <button (click)="addRow()" mat-button class="btn btn-primary with-icon bt-icon-right btn-sm">
-        <mat-icon>add</mat-icon>
+    <button (click)="addRow()" mat-button class="btn btn-primary with-icon">
+        <mat-icon style="margin-right: 5px;">add</mat-icon>
         Añadir serie
     </button>
 
 </div>
 
-<div style="margin-top: 10px">
-    <table class="table-light">
-        <thead>
-            <tr>
-                <th>Documento</th>
-                <th>Grado</th>
-                <th>Curso</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let dynamic of dynamicSeries;let i = index;">
-                <td>
-                    <select #selectDoc="ngModel" ngModel="dynamicSeries[i].docs"
-                        (change)="changeDoc(selectDoc.value,i)" id="selectDoc" class="form-select">
-                        <option hidden selected>Seleccione un documento</option>
-                        <option *ngFor="let x of docsList" [ngValue]="x">{{ x }}</option>
-                    </select>
-                </td>
-                <td>
-                    <select #selectDegre="ngModel" ngModel="dynamicSeries[i].degrees"
-                        (change)="changeDegree(selectDegre,i)" id="selectDegre" class="form-select">
-                        <option hidden selected>Seleccione un grado</option>
-                        <option *ngFor="let d of degreesList[i]" [ngValue]="d">{{ d }}</option>
-                    </select>
-                </td>
-                <td>
-                    <select #selectYear="ngModel" [(ngModel)]="dynamicSeries[i].years"
-                        (change)="changeYear(selectYear,i)" id="selectYear" class="form-select">
-                        <option hidden selected>Seleccione un curso</option>
-                        <option *ngFor="let y of yearsList[i]" [ngValue]="y">{{ y }}</option>
-                    </select>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+<form [formGroup]="formSeries">
+    <div style="margin-top: 10px">
+        <table class="table-light">
+            <thead>
+                <tr>
+                    <th>Documento</th>
+                    <th>Grado</th>
+                    <th>Curso</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let dynamic of dynamicSeries;let i = index;" class="lineaForm">
+                    <td style="width: 50%;">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Seleccione un documento</mat-label>
+                            <mat-select [formControlName]="'doc'+i">
+                                <mat-option *ngFor="let doc of docsList" [value]="doc">{{ doc }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                    <td style="width: 40%;">
+                        <mat-form-field appearance="fill">
+                            <mat-select [formControlName]="'degree'+i">
+                                <mat-option *ngFor="let degree of degreesList[i]" [value]="degree">{{ degree }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                    <td style="width: 5%;">
+                        <mat-form-field appearance="fill">
+                            <mat-select [formControlName]="'year'+i">
+                                <mat-option *ngFor="let year of yearsList[i]" [value]="year">{{ year }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                    <td style="width: 5%;" (click)="borraDynamicSerie(i)">
+                        <button class="btn with-icon">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</form> 
