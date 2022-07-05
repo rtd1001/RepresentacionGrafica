@@ -69,6 +69,46 @@ addRow() {
   }
 }
 
+
+borraDynamicSerie(i) {
+  if (this.dynamicSeries.length === 1) {
+    alert('No se pueden borrar todas las series')
+  } else {
+    this.dynamicSeries.splice(i, 1);
+    this.formSeries.removeControl(`doc${i}`);
+    this.formSeries.removeControl(`degree${i}`);
+    this.formSeries.removeControl(`year${i}`);
+    this.degreesList[i] = [];
+    this.yearsList[i] = [];
+  }
+}
+
+fillSerie(iActual) {
+  const degreeValue = this.formSeries.get(`degree${iActual}`).value;
+  const yearValue = this.formSeries.get(`year${iActual}`).value;
+  for (let i = 0; i < this.dynamicSeries.length; i++) {
+      if (i === iActual) continue;
+      else {
+          if (this.formSeries.get(`doc${i}`).value) {
+              //Si de la linea que recorremos, tiene documento seleccionado aunque sea
+              if (this.degreesList[i].indexOf(degreeValue) != -1) {
+                  //Si el documento recorrido posee ese grado
+                  this.formSeries.get(`degree${i}`).setValue(degreeValue, { emitEvent: false });
+                  this.dynamicSeries[i].degrees = degreeValue;
+                  this.makeYearList(i, degreeValue);
+                  if (this.yearsList[i].indexOf(yearValue)!=-1) {
+                      //Si el grado seleccionado posee ese año
+                      this.formSeries.get(`year${i}`).setValue(yearValue, { emitEvent: false });
+                      this.dynamicSeries[i].years = yearValue;
+                    }else{
+                      this.formSeries.get(`year${i}`).setValue(null, { emitEvent: false });
+                  }
+              }
+          }
+      }
+  }
+}
+
 changeDoc(i, value) {
   this.borraGrafica.emit(1);
 
@@ -92,45 +132,6 @@ changeDoc(i, value) {
   
 }
 
-borraDynamicSerie(i) {
-  if (this.dynamicSeries.length === 1) {
-    alert('No se pueden borrar todas las series')
-  } else {
-    this.dynamicSeries.splice(i, 1);
-    this.formSeries.removeControl(`doc${i}`);
-    this.formSeries.removeControl(`degree${i}`);
-    this.formSeries.removeControl(`year${i}`);
-    this.degreesList[i] = [];
-    this.yearsList[i] = [];
-  }
-}
-
-fillSerie(iActual) {
-  const degreeValue = this.formSeries.get(`degree${iActual}`).value;
-  const yearValue = this.formSeries.get(`year${iActual}`).value;
-  for (let i = 0; i < this.dynamicSeries.length; i++) {
-      if (i === iActual) continue;
-      else {
-          if (this.formSeries.get(`doc${i}`).value) {
-              //Si de la linea que recorremos, tiene documento seleccionado aunque sea
-              console.log(this.degreesList[i])
-              console.log(degreeValue)
-              console.log(this.degreesList[i].indexOf(degreeValue))
-              if (this.degreesList[i].indexOf(degreeValue)!=-1) {
-                  //Si el documento recorrido posee ese grado
-                  this.formSeries.get(`degree${i}`).setValue(degreeValue, { emitEvent: false });
-                  this.makeYearList(i, degreeValue);
-                  if (this.yearsList[i].indexOf(yearValue)!=-1) {
-                      //Si el grado seleccionado posee ese año
-                      this.formSeries.get(`year${i}`).setValue(yearValue, { emitEvent: false });
-                  }else{
-                      this.formSeries.get(`year${i}`).setValue(null, { emitEvent: false });
-                  }
-              }
-          }
-      }
-  }
-}
 
 
 makeEquality(i){
@@ -206,6 +207,9 @@ makeData(): any {
     
     for (var i = 0; i < this.dynamicSeries.length; i++) {
         Object.keys(this.dynamicSeries[i]).forEach(key => {
+          console.log(this.dynamicSeries[i])
+          console.log(key)
+          console.log(this.dynamicSeries[i][key])
             if (this.dynamicSeries[i][key] === "") {
                 serieCompleta = false;
             }

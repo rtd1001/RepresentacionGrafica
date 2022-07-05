@@ -52,7 +52,7 @@ export class Filtro3Component implements OnInit {
         this.formSeries.get(`degree${i}`).valueChanges.subscribe(degree => {
             this.changeDegree(i, degree);
         })
-        this.dynamicSeries.push({ docs: "", degrees: "", years: "" });
+        this.dynamicSeries.push({ docs: "", degrees: "" });
     } else {
         alert('Limite de series alcanzado')
     }
