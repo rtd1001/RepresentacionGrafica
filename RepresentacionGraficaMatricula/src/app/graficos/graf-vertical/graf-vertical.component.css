@@ -10,7 +10,7 @@ div {
 }
 
 ::ng-deep text {
-    transform: rotate(-25deg) !important;
+    transform: rotate(-15deg) !important;
 }
 
 ::ng-deep .textDataLabel{
