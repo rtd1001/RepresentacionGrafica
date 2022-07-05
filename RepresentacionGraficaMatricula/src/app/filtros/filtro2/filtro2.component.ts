@@ -71,12 +71,16 @@ addRow() {
 
 
 borraDynamicSerie(i) {
-  this.dynamicSeries.splice(i, 1);
-  this.formSeries.removeControl(`doc${i}`);
-  this.formSeries.removeControl(`degree${i}`);
-  this.formSeries.removeControl(`year${i}`);
-  this.degreesList[i] = [];
-  this.yearsList[i] = [];
+  if (this.dynamicSeries.length === 1) {
+    alert('No se pueden borrar todas las series')
+  } else {
+    this.dynamicSeries.splice(i, 1);
+    this.formSeries.removeControl(`doc${i}`);
+    this.formSeries.removeControl(`degree${i}`);
+    this.formSeries.removeControl(`year${i}`);
+    this.degreesList[i] = [];
+    this.yearsList[i] = [];
+  }
 }
 
 fillSerie(iActual) {
@@ -87,23 +91,22 @@ fillSerie(iActual) {
       else {
           if (this.formSeries.get(`doc${i}`).value) {
               //Si de la linea que recorremos, tiene documento seleccionado aunque sea
-              console.log(this.degreesList[i])
-              console.log(degreeValue)
-              console.log(this.degreesList[i].indexOf(degreeValue))
-              if (this.degreesList[i].indexOf(degreeValue)!=-1) {
-                  //Si el documento recorrido posee ese grado
-                  this.formSeries.get(`degree${i}`).setValue(degreeValue, { emitEvent: false });
-                  this.makeYearList(i, degreeValue);
-                  if (this.yearsList[i].indexOf(yearValue)!=-1) {
-                      //Si el grado seleccionado posee ese año
-                      this.formSeries.get(`year${i}`).setValue(yearValue, { emitEvent: false });
-                  }else{
-                      this.formSeries.get(`year${i}`).setValue(null, { emitEvent: false });
-                  }
-              }
-          }
-      }
-  }
+              if (this.degreesList[i].indexOf(degreeValue) != -1) {
+                //Si el documento recorrido posee ese grado
+                this.formSeries.get(`degree${i}`).setValue(degreeValue, { emitEvent: false });
+                this.dynamicSeries[i].degrees = degreeValue;
+                this.makeYearList(i, degreeValue);
+                if (this.yearsList[i].indexOf(yearValue) != -1) {
+                    //Si el grado seleccionado posee ese año
+                    this.formSeries.get(`year${i}`).setValue(yearValue, { emitEvent: false });
+                    this.dynamicSeries[i].years = yearValue;
+                } else {
+                    this.formSeries.get(`year${i}`).setValue(null, { emitEvent: false });
+                }
+            }
+        }
+    }
+}
 }
 
 changeDoc(i, value) {
