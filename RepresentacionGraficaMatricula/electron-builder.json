@@ -1,0 +1,24 @@
+{
+  "appId": "representacion-grafica-matricula.myapp",
+  "productName": "MyApp-Release1",
+  "directories": {
+    "output": "dist"
+  },
+  "files": [
+    "dist/**/*",
+    "node_modules/**/*"
+  ],
+  "win": {
+    "target": "NSIS"
+  },
+  "mac": {
+    "target": "dmg"
+  },
+  "linux": {
+    "target": [
+      "deb",
+      "rpm",
+      "AppImage"
+    ]
+  }
+}
